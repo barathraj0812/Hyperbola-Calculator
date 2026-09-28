@@ -28,13 +28,14 @@ summary{min-height:48px;display:flex;align-items:center;font-weight:600;cursor:p
 .r{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid var(--grid);flex-wrap:wrap}.r b{color:var(--mut);font-weight:500}.r span{font-family:Georgia,serif;text-align:right}
 body.pres{font-size:20px}body.pres button,body.pres select{min-height:60px;font-size:1.2rem}body.pres main{grid-template-columns:minmax(340px,440px) 1fr}
 body.pres #res,body.pres .hist{display:none}body.pres #gw{height:78vh}
-@media print{header,.keys,.chips,.tb{display:none}main{display:block}}
+@page{size:A4 landscape;margin:12mm}
+@media print{header,main>aside,#sel,.keys,.chips,.tb,#adv>h3,#adv>.ins,#adv>#advt,#adv>label,#fs{display:none!important}body{background:#fff;color:#000;font-size:10pt}main{display:block;padding:0}.card{border:0;padding:0;background:#fff;break-inside:avoid}#res{display:block}#res details,#adv details{border:0;border-radius:0;margin:0 0 8px;padding:0;break-inside:avoid}#res summary,#adv summary{min-height:0;padding:4px 0;color:#000}#res .r,#adv .r{padding:3px 0;border-color:#ccc}#gw{height:120mm;break-inside:avoid;margin:8px 0}canvas{border:1px solid #999}.cp{display:none!important}}
 .ins{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}.ins input{width:96px;min-height:44px;font:inherit;padding:0 8px;border:1.5px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--fg)}#q{min-height:48px;padding:0 12px;font:inherit;border:1.5px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--fg);width:200px}.fm{font-size:.85rem;color:var(--mut);font-style:italic;padding:6px 0}.cp{min-height:36px!important;min-width:36px;padding:0!important}.cp::before{content:'⧉'}.r span{flex:1}#adv{grid-column:1/-1}
 button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media(prefers-contrast:more){:root{--bd:#000;--mut:#000}}body{overflow-x:hidden}header{position:sticky;top:0;z-index:5}#q{max-width:100%}
 body.pres main{grid-template-columns:1fr}body.pres .keys,body.pres #ex,body.pres #adv,body.pres #fs,body.pres .chips:not(#vis){display:none}body.pres #vis{display:flex}body.pres #eq{font-size:2rem;min-height:80px}body.pres #gw{height:74vh}body.pres canvas{font-size:20px}
-@media print{#adv .ins,#advt,#gw .tb,#vis,#q,#fs{display:none}#gw{height:340px;break-inside:avoid}canvas{border:1px solid #999}body{background:#fff;color:#000}}
+@media print{#gw .tb,#vis,#q{display:none!important}}
 </style>
 </head>
 <body>
@@ -129,8 +130,12 @@ function analyze(c0){
   const{A,B,C,D,E,F}=c,sc=Math.max(1,...[A,B,C,D,E,F].map(Math.abs));
   if(Math.abs(A)+Math.abs(B)+Math.abs(C)<eps*sc)return{ty:'line',msg:'This has no squared terms, so it is a straight line (or not a conic at all), not a hyperbola.'};
   const disc=B*B-4*A*C,det=A*(C*F-E*E/4)-B/2*(B*F/2-E*D/4)+D/2*(B*E/4-C*D/2);
-  const dz=Math.abs(disc)<eps*sc*sc;
-  if(Math.abs(det)<1e-9*sc**3)return{ty:'deg',msg:'The supplied quadratic is degenerate: it is '+(dz?'a pair of parallel (or coincident) lines':disc>0?'a pair of intersecting lines':'a single point')+', not a hyperbola.'};
+  // Like det, the discriminant must use a scale-aware precision threshold.
+  // `eps` is appropriate for geometric comparisons, but not classification.
+  const dz=Math.abs(disc)<1e-18*sc*sc;
+  // The determinant scales cubically with coefficients. A broad fixed tolerance
+  // incorrectly rejects valid hyperbolas when a² and b² differ substantially.
+  if(Math.abs(det)<1e-18*sc**3)return{ty:'deg',msg:'The supplied quadratic is degenerate: it is '+(dz?'a pair of parallel (or coincident) lines':disc>0?'a pair of intersecting lines':'a single point')+', not a hyperbola.'};
   if(dz)return{ty:'par',msg:'This equation represents a parabola (B² − 4AC = 0), not a hyperbola.'};
   if(disc<0){
     if((A+C)*det>0)return{ty:'deg',msg:'This ellipse-type equation has no real points (imaginary ellipse), so nothing can be drawn.'};
@@ -142,7 +147,7 @@ function analyze(c0){
   if(K/l1>0){a2=K/l1;b2=-K/l2;t={x:Math.cos(th),y:Math.sin(th)}}
   else{a2=K/l2;b2=-K/l1;t={x:-Math.sin(th),y:Math.cos(th)}}
   if(!(a2>eps)||!(b2>eps)||!isFinite(a2+b2))return{ty:'deg',msg:'This hyperbola has invalid or numerically unstable squared lengths. Both denominators must be positive finite values.'};
-  const a=Math.sqrt(a2),b=Math.sqrt(b2),cc=Math.sqrt(a2+b2),n={x:-t.y,y:t.x},P=(u,v)=>({x:h+u*t.x+v*n.x,y:k+u*t.y+v*n.y});
+  const a=Math.sqrt(a2),b=Math.sqrt(b2),cc=Math.hypot(a,b),n={x:-t.y,y:t.x},P=(u,v)=>({x:h+u*t.x+v*n.x,y:k+u*t.y+v*n.y});
   if(![a,b,cc,h,k].every(isFinite)||cc<eps)return{ty:'deg',msg:'The equation produces numerically unstable geometric values and cannot be plotted safely.'};
   const rot=Math.abs(B)>eps*sc,horiz=Math.abs(t.y)<1e-9,vert=Math.abs(t.x)<1e-9;
   const center=P(0,0),vertices=[P(a,0),P(-a,0)],coVertices=[P(0,b),P(0,-b)],foci=[P(cc,0),P(-cc,0)],semiLatus=b2/a;
@@ -163,7 +168,8 @@ const num=v=>{const r=rat(v);if(!r)return null;return r[1]==1?''+r[0]:r[0]+'/'+r
 const dec=v=>{const p=+$('#prec').value;v=Math.abs(v)<.5*10**-p?0:v;return v.toFixed(p)};
 const dual=(ex,v)=>{const m=$('#mode').value;if(m=='dec'||!ex)return dec(v);if(m=='exact')return ex;return ex==dec(v)?ex:ex+' ≈ '+dec(v)};
 const pt=(p,exact)=>{const m=$('#mode').value,d=`(${dec(p.x)}, ${dec(p.y)})`;if(m=='dec'||!exact)return d;const e=`(${num(p.x)}, ${num(p.y)})`;return e.includes('null')?d:m=='exact'?e:e==d?e:e+' ≈ '+d};
-const lineEq=([p,u])=>{if(Math.abs(u.x)<1e-9)return`x = ${dec(p.x)}`;const m=u.y/u.x,c=p.y-m*p.x;return`y = ${dec(m)}x ${c<0?'−':'+'} ${dec(Math.abs(c))}`};
+const scalar=v=>dual(num(v),v);
+const lineEq=([p,u])=>{if(Math.abs(u.x)<1e-9)return`x = ${scalar(p.x)}`;const m=u.y/u.x,c=p.y-m*p.x;return`y = ${scalar(m)}x ${c<0?'−':'+'} ${scalar(Math.abs(c))}`};
 const eqn=c=>`${c.A}x² + ${c.B}xy + ${c.C}y² + ${c.D}x + ${c.E}y + ${c.F} = 0`.replace(/\+ -/g,'− ');
 
 // ---------- results ----------
@@ -306,6 +312,14 @@ const HM={
   L(R,al,be,ga){const{t,n,h,k}=R;return{A:al*t.x+be*n.x,B:al*t.y+be*n.y,C:ga+al*(h*t.x+k*t.y)+be*(h*n.x+k*n.y)}},
   S(R,u,v){return u*u/R.a2-v*v/R.b2},
   par(R,th){const c=Math.cos(th);if(Math.abs(c)<1e-6)return null;const u=R.a/c,v=R.b*Math.tan(th);return{u,v,p:HM.P2(R,u,v)}},
+  focusDirectrix(R,th){
+    const point=HM.par(R,th);if(!point)return null;
+    const side=point.u>=0?1:-1,focus=HM.P2(R,side*R.c,0),directrix=R.geometry.directrices[side>0?0:1];
+    const base=directrix[0],direction=directrix[1],along=(point.p.x-base.x)*direction.x+(point.p.y-base.y)*direction.y;
+    const foot={x:base.x+along*direction.x,y:base.y+along*direction.y};
+    const pf=Math.hypot(point.p.x-focus.x,point.p.y-focus.y),pd=Math.abs((point.p.x-base.x)*R.t.x+(point.p.y-base.y)*R.t.y);
+    return{point:point.p,focus,foot,directrix,pf,pd,ratio:pf/pd,side};
+  },
   thOf(R,u,v){let t=Math.atan2(v/R.b*R.a/u,R.a/u);return t<0?t+2*Math.PI:t},
   tan(R,u,v){return HM.L(R,u/R.a2,-v/R.b2,1)},
   nor(R,u,v){return Math.abs(v)<1e-9?HM.L(R,0,1,0):HM.L(R,R.a2/u,R.b2/v,R.a2+R.b2)},
@@ -352,15 +366,18 @@ const HM={
     if(Math.abs(c*c-R.a2-R.b2)>1e-9*(1+c*c))e.push('c² ≠ a²+b²');if(Math.abs(R.e-c/R.a)>1e-9*R.e)e.push('e ≠ c/a');
     if(Math.abs(Math.abs(d(R.V[0],R.Fo[0])-d(R.V[0],R.Fo[1]))-2*R.a)>1e-8*(1+R.a))e.push('focal-difference property fails');
     const dl=R.L.d[0],n=Math.hypot(dl[1].x,dl[1].y),dd=Math.abs((R.V[0].x-dl[0].x)*dl[1].y-(R.V[0].y-dl[0].y)*dl[1].x)/n,ff=Math.min(d(R.V[0],R.Fo[0]),d(R.V[0],R.Fo[1]));
-    if(Math.abs(ff/dd-R.e)>1e-8*R.e)e.push('directrix ratio ≠ e');
+    // At a nearly parabolic vertex PD can be below floating-point resolution
+    // relative to the centre. Avoid treating that ill-conditioned quotient as
+    // a geometry failure; other model checks still cover the same parameters.
+    if(dd>1e-7*(1+R.a)&&Math.abs(ff/dd-R.e)>1e-8*R.e)e.push('directrix ratio ≠ e');
     const s=10,pf=HM.P2(R,R.a*Math.cosh(s),R.b*Math.sinh(s)),ds=R.L.a.map(([p0,u])=>Math.abs((pf.x-p0.x)*u.y-(pf.y-p0.y)*u.x)/Math.hypot(u.x,u.y));
     if(Math.min(...ds)>1e-3*(R.a+R.b))e.push('asymptote check fails');
     return e;
   }
 };
 
-const AD={on:{tan:1,nor:0,chd:0,foc:0,tq:0,pol:0,nq:0,sl:0,dia:0,mid:0,cj:0,ref:0},der:0,R:null};
-const ADL=[['tan','Tangent at P'],['nor','Normal at P'],['chd','Chord P–P₂'],['foc','Focal chord'],['tq','Tangents from Q'],['pol','Polar of Q'],['nq','Normals from Q'],['sl','Slope tangents'],['dia','Diameters'],['mid','Midpoint chord'],['cj','Conjugate'],['ref','Reflection']];
+const AD={on:{tan:1,nor:0,chd:0,foc:0,fd:0,tq:0,pol:0,nq:0,sl:0,dia:0,mid:0,cj:0,ref:0},der:0,R:null};
+const ADL=[['tan','Tangent at P'],['nor','Normal at P'],['chd','Chord P–P₂'],['foc','Focal chord'],['fd','Focus–directrix ratio'],['tq','Tangents from Q'],['pol','Polar of Q'],['nq','Normals from Q'],['sl','Slope tangents'],['dia','Diameters'],['mid','Midpoint chord'],['cj','Conjugate'],['ref','Reflection']];
 const adv=document.createElement('section');adv.className='card';adv.id='adv';
 adv.innerHTML=`<h3 style="margin:0 0 8px">Advanced JEE tools</h3>
 <div class="ins"><label>θ (P) <input id="th" type="number" step="0.05" value="0.6"></label><label>P₂ θ₂ <input id="th2" type="number" step="0.05" value="-0.9"></label><label>Q x <input id="x0" type="number" step="any" value="0"></label><label>Q y <input id="y0" type="number" step="any" value="0"></label><label>slope m <input id="sm" type="number" step="any" value="1"></label><button id="setq">P from Q</button></div>
@@ -414,6 +431,13 @@ function advRender(){
   if(!P)sc('par',rw('P(θ)','undefined: secθ does not exist when cos θ = 0'));else{sc('par',rw('P(θ) with θ = '+dec(th),pp(P.p))+rw('Parameter of Q (if on curve)',Math.abs(S1-1)<1e-6&&Math.abs(u1)>1e-9?dec(HM.thOf(R,u1,v1))+' rad':'Q is not on the hyperbola'));ap('tan','P',P.p,RED);ap('nor','P',P.p,RED);ap('ref','P',P.p,RED)}
   if(P2&&on.chd)ap('chd','P₂',P2.p,PUR);
   if(P){
+    const fd=HM.focusDirectrix(R,th);
+    if(on.fd&&fd){
+      R.geometry.directrices.forEach((d,i)=>G.lines.push({n:'Directrix '+(i+1),l:{A:d[1].y,B:-d[1].x,C:d[1].y*d[0].x-d[1].x*d[0].y},col:TEAL,d:1}));
+      G.segs.push([fd.point,fd.focus,TEAL],[fd.point,fd.foot,PUR,1]);
+      G.pts.push({n:'P',p:fd.point,col:RED},{n:fd.side>0?'F₁':'F₂',p:fd.focus,col:TEAL},{n:'D',p:fd.foot,col:PUR});
+      sc('fd',fm('For the selected point P, the perpendicular PD is measured to the directrix on the same branch. The defining relationship is PF / PD = e.')+rw('Point P',pp(fd.point))+rw('Focal distance PF',dec(fd.pf))+rw('Perpendicular directrix distance PD',dec(fd.pd))+rw('PF / PD',dec(fd.ratio)+' = e = '+dec(R.e)));
+    }
     const tl=HM.tan(R,P.u,P.v);add('tan','Tangent',tl,RED);sc('tan',fm('At (x₁,y₁): xx₁/a² − yy₁/b² = 1 (principal axes). Parametric: (x/a) secθ − (y/b) tanθ = 1.')+rw('Tangent at P',lt(tl))+rw('Slope form','v = μu ± √(a²μ² − b²)'));
     const nl=HM.nor(R,P.u,P.v);add('nor','Normal',nl,PUR);sc('nor',fm('At (x₁,y₁): a²x/x₁ + b²y/y₁ = a²+b² (= c²). Parametric: ax cosθ + by cotθ = a²+b². At a vertex the normal is the transverse axis.')+rw('Normal at P (exact)',lt(nl)));
     const F=[HM.P2(R,c,0),HM.P2(R,-c,0)],near=P.u>0?0:1,Fn=F[near],Ff=F[1-near],T=(l=>({x:-l.B,y:l.A}))(HM.tan(R,P.u,P.v)),tn=Math.hypot(T.x,T.y),nT={x:T.y/tn,y:-T.x/tn};
@@ -448,7 +472,7 @@ function advRender(){
   sc('cj',fm('Conjugate: v²/b² − u²/a² = 1. Same asymptotes and centre; transverse ↔ conjugate axes swap; e′ = c/b; 1/e² + 1/e′² = 1.')+rw('Equation (principal)','(v)²/'+dec(b2)+' − (u)²/'+dec(a2)+' = 1'+(R.rot?'':'<br>original form: '+(Math.abs(R.t.y)<1e-9?`(x−${dec(R.h)})²/${dec(a2)} − (y−${dec(R.k)})²/${dec(b2)} = −1`:`(y−${dec(R.k)})²/${dec(a2)} − (x−${dec(R.h)})²/${dec(b2)} = −1`)))+rw('Centre',pp({x:R.h,y:R.k}))+rw('Vertices',[b,-b].map(z=>uv(R,0,z)).join(', '))+rw('Foci',[c,-c].map(z=>uv(R,0,z)).join(', '))+rw('e′ = c/b',dec(c/b))+rw('Asymptotes',R.L.a.map(lineEq).join('<br>')));
   const ck=HM.check(R);sc('ver',rw('Internal consistency',ck.length?'⚠ '+ck.join('; '):'✓ vertices, c²=a²+b², e=c/a, focal difference, directrix ratio, asymptotes all verified'));
   if(AD.der){const q=R.q;sc('der',[`Original: ${eqn(q)}`,`Δ = B²−4AC = ${dec(q.B*q.B-4*q.A*q.C)} > 0 → hyperbola`,`Centre: solve 2Ax+By+D=0, Bx+2Cy+E=0 → (h,k) = (${dec(R.h)}, ${dec(R.k)})`,R.rot?`Rotate by θ = ½·atan2(B, A−C) = ${dec(Math.atan2(R.t.y,R.t.x)*180/Math.PI)}° to remove xy`:'B = 0: complete the squares in x and y',`Translate: X = x−h, Y = y−k → λ₁u²+λ₂v² = K`,`a² = ${dec(a2)}, b² = ${dec(b2)}`,`c² = a²+b² = ${dec(c*c)} → c = ${dec(c)}`,`e = c/a = ${dec(R.e)}`,`Vertices: centre ± a·(axis) = ${R.V.map(pp).join(', ')}`,`Foci: centre ± c·(axis) = ${R.Fo.map(pp).join(', ')}`,`Asymptotes: v = ±(b/a)u → ${R.L.a.map(lineEq).join(' ; ')}`].map((t,i)=>rw('Step '+(i+1),t)).join(''))}
-  o.innerHTML=[['par','Parametric form'],['tan','Tangents'],['nor','Normals'],['chd','Chords'],['pp','Pole & polar / pair of tangents'],['tq','Pair of tangents'],['dia','Diameters'],['cj','Conjugate hyperbola'],['sp','Special properties, focal & reflection'],['ver','Verification'],['der','Derivation']].filter(x=>S[x[0]]).map(x=>dt(x[1],S[x[0]])).join('');
+  o.innerHTML=[['par','Parametric form'],['tan','Tangents'],['nor','Normals'],['chd','Chords'],['fd','Focus-directrix geometry'],['pp','Pole & polar / pair of tangents'],['tq','Pair of tangents'],['dia','Diameters'],['cj','Conjugate hyperbola'],['sp','Special properties, focal & reflection'],['ver','Verification'],['der','Derivation']].filter(x=>S[x[0]]).map(x=>dt(x[1],S[x[0]])).join('');
   st.adv=G;cv.setAttribute('role','img');cv.setAttribute('aria-label','Graph of the hyperbola centred at ('+dec(R.h)+', '+dec(R.k)+'), a = '+dec(R.a)+', b = '+dec(R.b)+', e = '+dec(R.e));renderPointAnalysis();applyQ();draw();
 }
 

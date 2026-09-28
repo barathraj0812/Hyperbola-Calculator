@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Hyperbola Calculator</title>
+<html lang="en"><head><meta charset="utf-8"><title>Hyperbola Calculator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--fg:#14171f;--mut:#5b6472;--ac:#1a56db;--bd:#d5d9e0;--c1:#d63384;--c2:#0a8f5b;--c3:#e67700;--grid:#e3e6eb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -35,42 +32,23 @@ button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visi
 @media(prefers-contrast:more){:root{--bd:#000;--mut:#000}}body{overflow-x:hidden}header{position:sticky;top:0;z-index:5}#q{max-width:100%}
 body.pres main{grid-template-columns:1fr}body.pres .keys,body.pres #ex,body.pres #adv,body.pres #fs,body.pres .chips:not(#vis){display:none}body.pres #vis{display:flex}body.pres #eq{font-size:2rem;min-height:80px}body.pres #gw{height:74vh}body.pres canvas{font-size:20px}
 @media print{#adv .ins,#advt,#gw .tb,#vis,#q,#fs{display:none}#gw{height:340px;break-inside:avoid}canvas{border:1px solid #999}body{background:#fff;color:#000}}
-</style>
-</head>
-<body>
-<header>
-  <h1>Hyperbola Calculator</h1>
-  <select id="mode" aria-label="Output"><option value="both">Exact + Decimal</option><option value="exact">Exact</option><option value="dec">Decimal</option></select>
-  <select id="prec" aria-label="Decimals"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option></select>
-  <select id="theme" aria-label="Theme"><option value="system">System</option><option value="dark">Dark</option><option value="light">Light</option></select>
-  <input id="q" placeholder="Search: focus, tangent, polar…" aria-label="Search properties">
-  <button id="pres" class="pri">⛶ Present</button>
-</header>
+</style></head><body>
+<header><h1>Hyperbola Calculator</h1>
+<select id="mode" aria-label="Output"><option value="both">Exact + Decimal</option><option value="exact">Exact</option><option value="dec">Decimal</option></select>
+<select id="prec" aria-label="Decimals"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option></select>
+<select id="theme" aria-label="Theme"><option value="system">System</option><option value="dark">Dark</option><option value="light">Light</option></select>
+<input id="q" placeholder="Search: focus, tangent, polar…" aria-label="Search properties"><button id="pres" class="pri">⛶ Present</button></header>
 <main>
-  <aside class="card">
-    <input id="eq" autocomplete="off" spellcheck="false" aria-label="Equation" value="x²/16 - y²/9 = 1">
-    <div id="msg"></div>
-    <div class="keys" id="keys"></div>
-    <div class="chips"><button id="rnd">🎲 Random</button><button id="clr">Clear</button><button id="cpy">Copy results</button></div>
-    <div class="chips" id="ex"></div>
-    <h3 style="margin:14px 0 0" class="hist">History</h3>
-    <div class="chips hist" id="hist"></div>
-  </aside>
-  <section class="card">
-    <div class="chips" id="vis" style="margin:0 0 8px"></div>
-    <div id="gw">
-      <canvas id="cv"></canvas>
-      <div class="tb">
-        <button id="zi" aria-label="Zoom in">+</button>
-        <button id="zo" aria-label="Zoom out">−</button>
-        <button id="fit" aria-label="Fit curve">⤢</button>
-      </div>
-    </div>
-    <div id="sel">Tap a point or line on the graph to see its details.</div>
-  </section>
-  <section class="card" id="res"></section>
+<aside class="card"><input id="eq" autocomplete="off" spellcheck="false" aria-label="Equation" value="x²/16 - y²/9 = 1">
+<div id="msg"></div><div class="keys" id="keys"></div>
+<div class="chips"><button id="rnd">🎲 Random</button><button id="clr">Clear</button><button id="cpy">Copy results</button></div>
+<div class="chips" id="ex"></div>
+<h3 style="margin:14px 0 0" class="hist">History</h3><div class="chips hist" id="hist"></div></aside>
+<section class="card"><div class="chips" id="vis" style="margin:0 0 8px"></div>
+<div id="gw"><canvas id="cv"></canvas><div class="tb"><button id="zi" aria-label="Zoom in">+</button><button id="zo" aria-label="Zoom out">−</button><button id="fit" aria-label="Fit curve">⤢</button></div></div>
+<div id="sel">Tap a point or line on the graph to see its details.</div></section>
+<section class="card" id="res"></section>
 </main>
-
 <script>
 const $=q=>document.querySelector(q),inp=$('#eq'),cv=$('#cv'),ctx=cv.getContext('2d');
 const EX=['x²/16 - y²/9 = 1','y²/25 - x²/9 = 1','(x-2)²/9 - (y+1)²/4 = 1','4x² - 9y² - 16x + 18y - 29 = 0','xy = 4','x² - y² = 9','x²/4 + y²/9 = 1'];
@@ -78,275 +56,186 @@ const KEYS=['x','y','²','^','√(','π','+','−','×','÷','/','(',')','=','�
 const VIS=[['c','Center'],['v','Vertices'],['f','Foci'],['a','Asymptotes'],['d','Directrices'],['ax','Axes']];
 const st={vis:{c:1,v:1,f:1,a:1,d:0,ax:0},R:null,V:{x:0,y:0,s:40},sel:null,W:0,H:0};
 const eps=1e-9;
-
 // ---------- parser ----------
-function pw(e){
-  let i;
-  while((i=e.lastIndexOf('^'))>=0){
-    let b=i-1;
-    if(e[b]==')'){let d=0;for(;b>=0;b--){if(e[b]==')')d++;if(e[b]=='('&&--d==0)break}}
-    else while(b>0&&/[\w.]/.test(e[b-1]))b--;
-    let j=i+1;if(e[j]=='-')j++;
-    if(e[j]=='('){let d=0,q=j;for(;q<e.length;q++){if(e[q]=='(')d++;if(e[q]==')'&&--d==0)break}j=q+1}
-    else while(j<e.length&&/[\d.]/.test(e[j]))j++;
-    e=e.slice(0,b)+'pow('+e.slice(b,i)+','+e.slice(i+1,j)+')'+e.slice(j);
-  }
-  return e;
-}
-
+function pw(e){let i;while((i=e.lastIndexOf('^'))>=0){let b=i-1;if(e[b]==')'){let d=0;for(;b>=0;b--){if(e[b]==')')d++;if(e[b]=='('&&--d==0)break}}else while(b>0&&/[\w.]/.test(e[b-1]))b--;
+let j=i+1;if(e[j]=='-')j++;if(e[j]=='('){let d=0,q=j;for(;q<e.length;q++){if(e[q]=='(')d++;if(e[q]==')'&&--d==0)break}j=q+1}else while(j<e.length&&/[\d.]/.test(e[j]))j++;
+e=e.slice(0,b)+'pow('+e.slice(b,i)+','+e.slice(i+1,j)+')'+e.slice(j)}return e}
 function parse(src){
-  let s=src.toLowerCase().replace(/[−–—]/g,'-').replace(/[×·]/g,'*').replace(/÷/g,'/').replace(/²/g,'^2').replace(/³/g,'^3').replace(/π/g,'(3.141592653589793)').replace(/√(\d+\.?\d*|[xy])/g,'sqrt($1)').replace(/√/g,'sqrt').replace(/[\[{]/g,'(').replace(/[\]}]/g,')').replace(/\s+/g,'');
-  if(!s)throw'Type an equation, for example x²/16 − y²/9 = 1.';
-  const P=s.split('=');
-  if(P.length>2)throw'Only one "=" sign is allowed.';
-  if(P.length>1&&(!P[0]||!P[1]))throw'One side of the "=" is empty. Example: x²/16 − y²/9 = 1.';
-  let d=0;for(const ch of s){if(ch=='(')d++;if(ch==')'&&--d<0)throw'There is a ")" with no matching "(".'}
-  if(d>0)throw'A "(" is never closed — this expression contains an unmatched parenthesis.';
-  const w=src.toLowerCase().replace(/sqrt/g,'').match(/[a-z]*[a-wz][a-z]*/);
-  if(w)throw`"${w[0]}" is not a supported function or variable. Only x, y, numbers, + − × ÷ ^ ( ) and √ are allowed.`;
-  if(/\/\//.test(s))throw'Two division signs in a row (//). Each “/” needs a number or bracket after it, e.g. x²/16.';
-  if(/[+\-*\/^]($|=)/.test(s)||/(^|=)[*\/^]/.test(s))throw'The expression starts or ends with an operator. A “/” or “+” needs a number or bracket after it, e.g. x²/16.';
-  if(/e[+-]?\d/.test(s)&&/\de/.test(s))throw'Scientific notation (1e6) is not supported. Write the full number, e.g. 1000000.';
-  const m=s.replace(/sqrt/g,'').match(/[^0-9xy+\-*/().^=]/);
-  if(m)throw`The symbol "${m[0]}" isn't supported. Use x, y, numbers, + − × ÷ ^ ( ) and √.`;
-  if(P.length<2)throw'An equation needs an "=" sign. Example: x²/16 − y²/9 = 1.';
-  const T=e=>pw(e.replace(/(\d|\)|[xy])(?=[xy(]|sqrt)/g,'$1*'));
-  let fn;try{fn=new Function('x','y','sqrt','pow',`return (${T(P[0])})-(${T(P[1])})`)}catch(e){throw'This expression could not be read. Check for two operators in a row (like "+*") or a missing number.'}
-  const g=(x,y)=>fn(x,y,Math.sqrt,Math.pow);
-  const pts=[[0,0],[1,0],[-1,0],[0,1],[0,-1],[1,1],[2,3],[-3,1.5]],v=pts.map(p=>g(...p));
-  if(v.some(x=>!isFinite(x)))throw'The denominator cannot be zero (or a square root of a negative number appeared).';
-  const F=v[0],A=(v[1]+v[2])/2-F,D=(v[1]-v[2])/2,C=(v[3]+v[4])/2-F,E=(v[3]-v[4])/2,B=v[5]-A-C-D-E-F;
-  const pr=(x,y)=>A*x*x+B*x*y+C*y*y+D*x+E*y+F;
-  if([[2,3],[-3,1.5]].some(p=>Math.abs(pr(...p)-g(...p))>1e-7*(1+Math.abs(g(...p)))))throw'This is not a quadratic (degree-2) equation in x and y, so it cannot be a conic. Keep powers of x and y at most 2.';
-  const cl=z=>Math.abs(z)<1e-10?0:+z.toFixed(10);
-  return{A:cl(A),B:cl(B),C:cl(C),D:cl(D),E:cl(E),F:cl(F)};
-}
-
+let s=src.toLowerCase().replace(/[−–—]/g,'-').replace(/[×·]/g,'*').replace(/÷/g,'/').replace(/²/g,'^2').replace(/³/g,'^3').replace(/π/g,'(3.141592653589793)').replace(/√(\d+\.?\d*|[xy])/g,'sqrt($1)').replace(/√/g,'sqrt').replace(/[\[{]/g,'(').replace(/[\]}]/g,')').replace(/\s+/g,'');
+if(!s)throw'Type an equation, for example x²/16 − y²/9 = 1.';
+const P=s.split('=');
+if(P.length>2)throw'Only one "=" sign is allowed.';
+if(P.length>1&&(!P[0]||!P[1]))throw'One side of the "=" is empty. Example: x²/16 − y²/9 = 1.';
+let d=0;for(const ch of s){if(ch=='(')d++;if(ch==')'&&--d<0)throw'There is a ")" with no matching "(".'}
+if(d>0)throw'A "(" is never closed — this expression contains an unmatched parenthesis.';
+const w=src.toLowerCase().replace(/sqrt/g,'').match(/[a-z]*[a-wz][a-z]*/);
+if(w)throw`"${w[0]}" is not a supported function or variable. Only x, y, numbers, + − × ÷ ^ ( ) and √ are allowed.`;
+if(/\/\//.test(s))throw'Two division signs in a row (//). Each “/” needs a number or bracket after it, e.g. x²/16.';
+if(/[+\-*\/^]($|=)/.test(s)||/(^|=)[*\/^]/.test(s))throw'The expression starts or ends with an operator. A “/” or “+” needs a number or bracket after it, e.g. x²/16.';
+if(/e[+-]?\d/.test(s)&&/\de/.test(s))throw'Scientific notation (1e6) is not supported. Write the full number, e.g. 1000000.';
+const m=s.replace(/sqrt/g,'').match(/[^0-9xy+\-*/().^=]/);
+if(m)throw`The symbol "${m[0]}" isn't supported. Use x, y, numbers, + − × ÷ ^ ( ) and √.`;
+if(P.length<2)throw'An equation needs an "=" sign. Example: x²/16 − y²/9 = 1.';
+const T=e=>pw(e.replace(/(\d|\)|[xy])(?=[xy(]|sqrt)/g,'$1*'));
+let fn;try{fn=new Function('x','y','sqrt','pow',`return (${T(P[0])})-(${T(P[1])})`)}catch(e){throw'This expression could not be read. Check for two operators in a row (like "+*") or a missing number.'}
+const g=(x,y)=>fn(x,y,Math.sqrt,Math.pow);
+const pts=[[0,0],[1,0],[-1,0],[0,1],[0,-1],[1,1],[2,3],[-3,1.5]],v=pts.map(p=>g(...p));
+if(v.some(x=>!isFinite(x)))throw'The denominator cannot be zero (or a square root of a negative number appeared).';
+const F=v[0],A=(v[1]+v[2])/2-F,D=(v[1]-v[2])/2,C=(v[3]+v[4])/2-F,E=(v[3]-v[4])/2,B=v[5]-A-C-D-E-F;
+const pr=(x,y)=>A*x*x+B*x*y+C*y*y+D*x+E*y+F;
+if([[2,3],[-3,1.5]].some(p=>Math.abs(pr(...p)-g(...p))>1e-7*(1+Math.abs(g(...p)))))throw'This is not a quadratic (degree-2) equation in x and y, so it cannot be a conic. Keep powers of x and y at most 2.';
+const cl=z=>Math.abs(z)<1e-10?0:+z.toFixed(10);
+return{A:cl(A),B:cl(B),C:cl(C),D:cl(D),E:cl(E),F:cl(F)}}
 // ---------- maths ----------
-function analyze(c0){
-  if(![c0.A,c0.B,c0.C,c0.D,c0.E,c0.F].every(isFinite))return{ty:'deg',msg:'The equation contains a division by zero or a number that is too large.'};
-  const s0=Math.max(...[c0.A,c0.B,c0.C,c0.D,c0.E,c0.F].map(Math.abs))||1,c={A:c0.A/s0,B:c0.B/s0,C:c0.C/s0,D:c0.D/s0,E:c0.E/s0,F:c0.F/s0};
-  const{A,B,C,D,E,F}=c,sc=Math.max(1,...[A,B,C,D,E,F].map(Math.abs));
-  if(Math.abs(A)+Math.abs(B)+Math.abs(C)<eps*sc)return{ty:'line',msg:'This has no squared terms, so it is a straight line (or not a conic at all), not a hyperbola.'};
-  const disc=B*B-4*A*C,det=A*(C*F-E*E/4)-B/2*(B*F/2-E*D/4)+D/2*(B*E/4-C*D/2);
-  const dz=Math.abs(disc)<eps*sc*sc;
-  if(Math.abs(det)<1e-9*sc**3)return{ty:'deg',msg:'The supplied quadratic is degenerate: it is '+(dz?'a pair of parallel (or coincident) lines':disc>0?'a pair of intersecting lines':'a single point')+', not a hyperbola.'};
-  if(dz)return{ty:'par',msg:'This equation represents a parabola (B² − 4AC = 0), not a hyperbola.'};
-  if(disc<0){
-    if((A+C)*det>0)return{ty:'deg',msg:'This ellipse-type equation has no real points (imaginary ellipse), so nothing can be drawn.'};
-    return{ty:'ell',msg:Math.abs(B)<eps*sc&&Math.abs(A-C)<eps*sc?'This equation represents a circle, not a hyperbola.':'This equation represents an ellipse, not a hyperbola. A hyperbola needs opposite signs on the x² and y² terms.'};
-  }
-  const den=4*A*C-B*B,h=(B*E-2*C*D)/den,k=(B*D-2*A*E)/den,K=-(F+(D*h+E*k)/2);
-  const th=.5*Math.atan2(B,A-C),m=(A+C)/2,r=Math.hypot((A-C)/2,B/2),l1=m+r,l2=m-r;
-  let a2,b2,t;
-  if(K/l1>0){a2=K/l1;b2=-K/l2;t={x:Math.cos(th),y:Math.sin(th)}}
-  else{a2=K/l2;b2=-K/l1;t={x:-Math.sin(th),y:Math.cos(th)}}
-  const a=Math.sqrt(a2),b=Math.sqrt(b2),cc=Math.sqrt(a2+b2),n={x:-t.y,y:t.x},P=(u,v)=>({x:h+u*t.x+v*n.x,y:k+u*t.y+v*n.y});
-  const rot=Math.abs(B)>eps*sc,horiz=Math.abs(t.y)<1e-9,vert=Math.abs(t.x)<1e-9;
-  return{ty:'hyp',h,k,a,b,c:cc,a2,b2,e:cc/a,t,n,rot,ori:rot?'Rotated (transverse axis at '+(Math.atan2(t.y,t.x)*180/Math.PI).toFixed(2)+'° to the x-axis)':horiz?'Horizontal (opens left and right)':'Vertical (opens up and down)',
-  V:[P(a,0),P(-a,0)],CV:[P(0,b),P(0,-b)],Fo:[P(cc,0),P(-cc,0)],
-  L:{ax:[[P(0,0),t],[P(0,0),n]],a:[[P(0,0),{x:a*t.x+b*n.x,y:a*t.y+b*n.y}],[P(0,0),{x:a*t.x-b*n.x,y:a*t.y-b*n.y}]],d:[[P(a2/cc,0),n],[P(-a2/cc,0),n]]},q:c0};
-}
-
+function analyze(c0){if(![c0.A,c0.B,c0.C,c0.D,c0.E,c0.F].every(isFinite))return{ty:'deg',msg:'The equation contains a division by zero or a number that is too large.'};const s0=Math.max(...[c0.A,c0.B,c0.C,c0.D,c0.E,c0.F].map(Math.abs))||1,c={A:c0.A/s0,B:c0.B/s0,C:c0.C/s0,D:c0.D/s0,E:c0.E/s0,F:c0.F/s0};const{A,B,C,D,E,F}=c,sc=Math.max(1,...[A,B,C,D,E,F].map(Math.abs));
+if(Math.abs(A)+Math.abs(B)+Math.abs(C)<eps*sc)return{ty:'line',msg:'This has no squared terms, so it is a straight line (or not a conic at all), not a hyperbola.'};
+const disc=B*B-4*A*C,det=A*(C*F-E*E/4)-B/2*(B*F/2-E*D/4)+D/2*(B*E/4-C*D/2);
+const dz=Math.abs(disc)<eps*sc*sc;
+if(Math.abs(det)<1e-9*sc**3)return{ty:'deg',msg:'The supplied quadratic is degenerate: it is '+(dz?'a pair of parallel (or coincident) lines':disc>0?'a pair of intersecting lines':'a single point')+', not a hyperbola.'};
+if(dz)return{ty:'par',msg:'This equation represents a parabola (B² − 4AC = 0), not a hyperbola.'};
+if(disc<0){if((A+C)*det>0)return{ty:'deg',msg:'This ellipse-type equation has no real points (imaginary ellipse), so nothing can be drawn.'};
+return{ty:'ell',msg:Math.abs(B)<eps*sc&&Math.abs(A-C)<eps*sc?'This equation represents a circle, not a hyperbola.':'This equation represents an ellipse, not a hyperbola. A hyperbola needs opposite signs on the x² and y² terms.'}}
+const den=4*A*C-B*B,h=(B*E-2*C*D)/den,k=(B*D-2*A*E)/den,K=-(F+(D*h+E*k)/2);
+const th=.5*Math.atan2(B,A-C),m=(A+C)/2,r=Math.hypot((A-C)/2,B/2),l1=m+r,l2=m-r;
+let a2,b2,t;if(K/l1>0){a2=K/l1;b2=-K/l2;t={x:Math.cos(th),y:Math.sin(th)}}else{a2=K/l2;b2=-K/l1;t={x:-Math.sin(th),y:Math.cos(th)}}
+const a=Math.sqrt(a2),b=Math.sqrt(b2),cc=Math.sqrt(a2+b2),n={x:-t.y,y:t.x},P=(u,v)=>({x:h+u*t.x+v*n.x,y:k+u*t.y+v*n.y});
+const rot=Math.abs(B)>eps*sc,horiz=Math.abs(t.y)<1e-9,vert=Math.abs(t.x)<1e-9;
+return{ty:'hyp',h,k,a,b,c:cc,a2,b2,e:cc/a,t,n,rot,ori:rot?'Rotated (transverse axis at '+(Math.atan2(t.y,t.x)*180/Math.PI).toFixed(2)+'° to the x-axis)':horiz?'Horizontal (opens left and right)':'Vertical (opens up and down)',
+V:[P(a,0),P(-a,0)],CV:[P(0,b),P(0,-b)],Fo:[P(cc,0),P(-cc,0)],
+L:{ax:[[P(0,0),t],[P(0,0),n]],a:[[P(0,0),{x:a*t.x+b*n.x,y:a*t.y+b*n.y}],[P(0,0),{x:a*t.x-b*n.x,y:a*t.y-b*n.y}]],d:[[P(a2/cc,0),n],[P(-a2/cc,0),n]]},q:c0}}
 // ---------- formatting ----------
 const rat=v=>{for(let q=1;q<=400;q++){const p=Math.round(v*q);if(Math.abs(v-p/q)<1e-9)return[p,q]}return null};
-const sq=v=>{
-  const r=rat(v);if(!r||r[0]<0)return null;const[p,q]=r,n=p*q;
-  let s=Math.floor(Math.sqrt(n));while(s>1&&n%(s*s))s--;const rr=n/(s*s);
-  const top=rr==1?''+s:(s>1?s:'')+'√'+rr;return q>1?top+'/'+q:top;
-};
+const sq=v=>{const r=rat(v);if(!r||r[0]<0)return null;const[p,q]=r,n=p*q;let s=Math.floor(Math.sqrt(n));while(s>1&&n%(s*s))s--;const rr=n/(s*s);
+const top=rr==1?''+s:(s>1?s:'')+'√'+rr;return q>1?top+'/'+q:top};
 const num=v=>{const r=rat(v);if(!r)return null;return r[1]==1?''+r[0]:r[0]+'/'+r[1]};
 const dec=v=>{const p=+$('#prec').value;v=Math.abs(v)<.5*10**-p?0:v;return v.toFixed(p)};
 const dual=(ex,v)=>{const m=$('#mode').value;if(m=='dec'||!ex)return dec(v);if(m=='exact')return ex;return ex==dec(v)?ex:ex+' ≈ '+dec(v)};
 const pt=(p,exact)=>{const m=$('#mode').value,d=`(${dec(p.x)}, ${dec(p.y)})`;if(m=='dec'||!exact)return d;const e=`(${num(p.x)}, ${num(p.y)})`;return e.includes('null')?d:m=='exact'?e:e==d?e:e+' ≈ '+d};
 const lineEq=([p,u])=>{if(Math.abs(u.x)<1e-9)return`x = ${dec(p.x)}`;const m=u.y/u.x,c=p.y-m*p.x;return`y = ${dec(m)}x ${c<0?'−':'+'} ${dec(Math.abs(c))}`};
 const eqn=c=>`${c.A}x² + ${c.B}xy + ${c.C}y² + ${c.D}x + ${c.E}y + ${c.F} = 0`.replace(/\+ -/g,'− ');
-
 // ---------- results ----------
 function row(k,v){return`<div class="r"><b>${k}</b><span>${v}</span></div>`}
 function group(t,rows,o){return`<details ${o?'open':''}><summary>${t}</summary>${rows.join('')}</details>`}
-function renderRes(){
-  const R=st.R,el=$('#res');if(!R||R.ty!='hyp'){el.innerHTML='<b>Results appear here once a valid hyperbola is entered.</b>';if(window.advRender)advRender();return}
-  const ex=(v2)=>sq(v2);
-  let std;if(R.rot)std='Rotated: λ₁u² + λ₂v² = K in the rotated axes';else{const hk=(z,w)=>Math.abs(z)<1e-9?w:`(${w}${z<0?' + ':' − '}${dec(Math.abs(z))})`,X=hk(R.h,'x'),Y=hk(R.k,'y'),H=Math.abs(R.t.y)<1e-9;
-  std=H?`${X}²/${dec(R.a2)} − ${Y}²/${dec(R.b2)} = 1`:`${Y}²/${dec(R.a2)} − ${X}²/${dec(R.b2)} = 1`}
-  const e2=(R.a2+R.b2)/R.a2;
-  $('#res').innerHTML=group('Overview',[row('Original',$('#eq').value),row('Normalized',eqn(R.q)),row('Standard form',std),row('Type','Hyperbola'+(Math.abs(R.a-R.b)<1e-9?' (rectangular)':'')),row('Orientation',R.ori)],1)
-  +group('Fundamental parameters',[row('Center',pt({x:R.h,y:R.k},1)),row('a',dual(ex(R.a2),R.a)),row('b',dual(ex(R.b2),R.b)),row('c = √(a²+b²)',dual(ex(R.a2+R.b2),R.c)),row('Eccentricity e = c/a',dual(sq(e2),R.e))],1)
-  +group('Geometry',[row('Vertices',R.V.map(p=>pt(p,!R.rot)).join('<br>')),row('Co-vertices',R.CV.map(p=>pt(p,!R.rot)).join('<br>')),row('Foci',R.Fo.map(p=>pt(p,!R.rot)).join('<br>')),
-  row('Transverse axis',lineEq(R.L.ax[0])),row('Conjugate axis',lineEq(R.L.ax[1])),row('Asymptotes',R.L.a.map(lineEq).join('<br>')),row('Directrices',R.L.d.map(lineEq).join('<br>')),
-  row('Latus rectum length 2b²/a',dual(null,2*R.b2/R.a)),row('Length of transverse / conjugate axis',dec(2*R.a)+' / '+dec(2*R.b))],1);if(window.advRender)advRender();
-}
-
+function renderRes(){const R=st.R,el=$('#res');if(!R||R.ty!='hyp'){el.innerHTML='<b>Results appear here once a valid hyperbola is entered.</b>';if(window.advRender)advRender();return}
+const ex=(v2)=>sq(v2),tr=Math.abs(R.t.x)>1e-9&&Math.abs(R.t.y)>1e-9;
+let std;if(R.rot)std='Rotated: λ₁u² + λ₂v² = K in the rotated axes';else{const hk=(z,w)=>Math.abs(z)<1e-9?w:`(${w}${z<0?' + ':' − '}${dec(Math.abs(z))})`,X=hk(R.h,'x'),Y=hk(R.k,'y'),H=Math.abs(R.t.y)<1e-9;
+std=H?`${X}²/${dec(R.a2)} − ${Y}²/${dec(R.b2)} = 1`:`${Y}²/${dec(R.a2)} − ${X}²/${dec(R.b2)} = 1`}
+const e2=(R.a2+R.b2)/R.a2;
+$('#res').innerHTML=group('Overview',[row('Original',$('#eq').value),row('Normalized',eqn(R.q)),row('Standard form',std),row('Type','Hyperbola'+(Math.abs(R.a-R.b)<1e-9?' (rectangular)':'')),row('Orientation',R.ori)],1)
++group('Fundamental parameters',[row('Center',pt({x:R.h,y:R.k},1)),row('a',dual(ex(R.a2),R.a)),row('b',dual(ex(R.b2),R.b)),row('c = √(a²+b²)',dual(ex(R.a2+R.b2),R.c)),row('Eccentricity e = c/a',dual(sq(e2),R.e))],1)
++group('Geometry',[row('Vertices',R.V.map(p=>pt(p,!R.rot)).join('<br>')),row('Co-vertices',R.CV.map(p=>pt(p,!R.rot)).join('<br>')),row('Foci',R.Fo.map(p=>pt(p,!R.rot)).join('<br>')),
+row('Transverse axis',lineEq(R.L.ax[0])),row('Conjugate axis',lineEq(R.L.ax[1])),row('Asymptotes',R.L.a.map(lineEq).join('<br>')),row('Directrices',R.L.d.map(lineEq).join('<br>')),
+row('Latus rectum length 2b²/a',dual(null,2*R.b2/R.a)),row('Length of transverse / conjugate axis',dec(2*R.a)+' / '+dec(2*R.b))],1);if(window.advRender)advRender()}
 // ---------- graph ----------
 const col=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const X=x=>st.W/2+(x-st.V.x)*st.V.s,Y=y=>st.H/2-(y-st.V.y)*st.V.s;
-function line(p,u,c,w,dash){
-  const L=1e4,x0=X(p.x-u.x*L/Math.hypot(u.x,u.y)),y0=Y(p.y-u.y*L/Math.hypot(u.x,u.y)),x1=X(p.x+u.x*L/Math.hypot(u.x,u.y)),y1=Y(p.y+u.y*L/Math.hypot(u.x,u.y));
-  ctx.strokeStyle=c;ctx.lineWidth=w;ctx.setLineDash(dash||[]);ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();ctx.setLineDash([]);
-}
+function line(p,u,c,w,dash){const L=1e4,x0=X(p.x-u.x*L/Math.hypot(u.x,u.y)),y0=Y(p.y-u.y*L/Math.hypot(u.x,u.y)),x1=X(p.x+u.x*L/Math.hypot(u.x,u.y)),y1=Y(p.y+u.y*L/Math.hypot(u.x,u.y));
+ctx.strokeStyle=c;ctx.lineWidth=w;ctx.setLineDash(dash||[]);ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();ctx.setLineDash([])}
 function draw(){if(st.rq)return;st.rq=requestAnimationFrame(()=>{st.rq=0;draw0()})}
-function draw0(){
-  const dpr=devicePixelRatio||1,r=cv.getBoundingClientRect();st.W=r.width;st.H=r.height;cv.width=r.width*dpr;cv.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
-  const{W,H,V}=st;ctx.clearRect(0,0,W,H);let step=1;const raw=70/V.s,pw10=10**Math.floor(Math.log10(raw));step=[1,2,5,10].map(m=>m*pw10).find(s=>s>=raw);
-  ctx.font='12px system-ui';ctx.fillStyle=col('--mut');ctx.lineWidth=1;
-  for(let x=Math.ceil((V.x-W/2/V.s)/step)*step;x<=V.x+W/2/V.s;x+=step){if(!st.vis.g&&Math.abs(x)>1e-9)continue;ctx.strokeStyle=col(Math.abs(x)<1e-9?'--mut':'--grid');ctx.beginPath();ctx.moveTo(X(x),0);ctx.lineTo(X(x),H);ctx.stroke();if(Math.abs(x)>1e-9)ctx.fillText(+x.toFixed(6),X(x)+3,Math.min(H-4,Math.max(12,Y(0)+14)))}
-  for(let y=Math.ceil((V.y-H/2/V.s)/step)*step;y<=V.y+H/2/V.s;y+=step){if(!st.vis.g&&Math.abs(y)>1e-9)continue;ctx.strokeStyle=col(Math.abs(y)<1e-9?'--mut':'--grid');ctx.beginPath();ctx.moveTo(0,Y(y));ctx.lineTo(W,Y(y));ctx.stroke();if(Math.abs(y)>1e-9)ctx.fillText(+y.toFixed(6),Math.min(W-30,Math.max(4,X(0)+4)),Y(y)-3)}
-  const R=st.R;if(!R||R.ty!='hyp')return;const v=st.vis;
-  if(v.ax)R.L.ax.forEach(l=>line(l[0],l[1],col('--mut'),1.5,[6,5]));
-  if(v.a)R.L.a.forEach(l=>line(l[0],l[1],col('--c3'),1.8,[8,6]));
-  if(v.d)R.L.d.forEach(l=>line(l[0],l[1],col('--c2'),1.8,[3,5]));
-  const big=Math.hypot(W,H)/V.s+Math.hypot(V.x-R.h,V.y-R.k),S=Math.asinh(2*big/Math.min(R.a,R.b))+1;
-  ctx.strokeStyle=col('--ac');ctx.lineWidth=3;
-  for(const e of[1,-1]){ctx.beginPath();for(let i=0;i<=500;i++){const s=-S+2*S*i/500,u=e*R.a*Math.cosh(s),w=R.b*Math.sinh(s),x=R.h+u*R.t.x+w*R.n.x,y=R.k+u*R.t.y+w*R.n.y;i?ctx.lineTo(X(x),Y(y)):ctx.moveTo(X(x),Y(y))}ctx.stroke()}
-  for(const o of pts()){ctx.fillStyle=o.col;ctx.beginPath();ctx.arc(X(o.p.x),Y(o.p.y),o===st.sel?9:6,0,7);ctx.fill();if(o===st.sel){ctx.strokeStyle=col('--fg');ctx.lineWidth=2;ctx.stroke()}
-  ctx.fillStyle=col('--fg');ctx.font='bold 14px system-ui';if(st.vis.l)ctx.fillText(o.n,X(o.p.x)+9,Y(o.p.y)-9)}if(window.advDraw)advDraw();
-}
-function pts(){
-  const R=st.R,v=st.vis,o=[];if(!R||R.ty!='hyp')return o;
-  if(v.c)o.push({n:'C',k:'Center',p:{x:R.h,y:R.k},col:'#888'});
-  if(v.v){o.push({n:'V₁',k:'Vertex',p:R.V[0],col:col('--c1')},{n:'V₂',k:'Vertex',p:R.V[1],col:col('--c1')})}
-  if(v.f){o.push({n:'F₁',k:'Focus',p:R.Fo[0],col:col('--c2')},{n:'F₂',k:'Focus',p:R.Fo[1],col:col('--c2')})}
-  return o;
-}
-function pick(mx,my){
-  const R=st.R;if(!R||R.ty!='hyp')return;let best=null,bd=28;
-  for(const o of pts()){const d=Math.hypot(X(o.p.x)-mx,Y(o.p.y)-my);if(d<bd){bd=d;best=o}}
-  if(best){st.sel=best;const ex=!R.rot;$('#sel').textContent=`${best.n} — ${best.k}\nExact: ${(()=>{const e=`(${num(best.p.x)}, ${num(best.p.y)})`;return e.includes('null')?'(irrational — see approx)':ex&&best.k=='Center'?e:e.includes('null')?'n/a':e})()}\nApprox: (${dec(best.p.x)}, ${dec(best.p.y)})`;draw();return}
-  let bl=null;bd=14;const X0=(mx-st.W/2)/st.V.s+st.V.x,Y0=-(my-st.H/2)/st.V.s+st.V.y;
-  const ls=[];if(st.vis.a)R.L.a.forEach((l,i)=>ls.push(['Asymptote '+(i+1),l]));if(st.vis.d)R.L.d.forEach((l,i)=>ls.push(['Directrix '+(i+1),l]));if(st.vis.ax)R.L.ax.forEach((l,i)=>ls.push([i?'Conjugate axis':'Transverse axis',l]));
-  for(const[n,[p,u]]of ls){const L=Math.hypot(u.x,u.y),d=Math.abs((X0-p.x)*u.y-(Y0-p.y)*u.x)/L*st.V.s;if(d<bd){bd=d;bl=[n,[p,u]]}}
-  if(bl){st.sel=null;$('#sel').textContent=`${bl[0]}\n${lineEq(bl[1])}`;draw()}else{st.sel=null;$('#sel').textContent=`Point (${dec(X0)}, ${dec(Y0)})`;draw()}
-}
+function draw0(){const dpr=devicePixelRatio||1,r=cv.getBoundingClientRect();st.W=r.width;st.H=r.height;cv.width=r.width*dpr;cv.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+const{W,H,V}=st;ctx.clearRect(0,0,W,H);let step=1;const raw=70/V.s,pw10=10**Math.floor(Math.log10(raw));step=[1,2,5,10].map(m=>m*pw10).find(s=>s>=raw);
+ctx.font='12px system-ui';ctx.fillStyle=col('--mut');ctx.lineWidth=1;
+for(let x=Math.ceil((V.x-W/2/V.s)/step)*step;x<=V.x+W/2/V.s;x+=step){if(!st.vis.g&&Math.abs(x)>1e-9)continue;ctx.strokeStyle=col(Math.abs(x)<1e-9?'--mut':'--grid');ctx.beginPath();ctx.moveTo(X(x),0);ctx.lineTo(X(x),H);ctx.stroke();if(Math.abs(x)>1e-9)ctx.fillText(+x.toFixed(6),X(x)+3,Math.min(H-4,Math.max(12,Y(0)+14)))}
+for(let y=Math.ceil((V.y-H/2/V.s)/step)*step;y<=V.y+H/2/V.s;y+=step){if(!st.vis.g&&Math.abs(y)>1e-9)continue;ctx.strokeStyle=col(Math.abs(y)<1e-9?'--mut':'--grid');ctx.beginPath();ctx.moveTo(0,Y(y));ctx.lineTo(W,Y(y));ctx.stroke();if(Math.abs(y)>1e-9)ctx.fillText(+y.toFixed(6),Math.min(W-30,Math.max(4,X(0)+4)),Y(y)-3)}
+const R=st.R;if(!R||R.ty!='hyp')return;const v=st.vis;
+if(v.ax)R.L.ax.forEach(l=>line(l[0],l[1],col('--mut'),1.5,[6,5]));
+if(v.a)R.L.a.forEach(l=>line(l[0],l[1],col('--c3'),1.8,[8,6]));
+if(v.d)R.L.d.forEach(l=>line(l[0],l[1],col('--c2'),1.8,[3,5]));
+const big=Math.hypot(W,H)/V.s+Math.hypot(V.x-R.h,V.y-R.k),S=Math.asinh(2*big/Math.min(R.a,R.b))+1;
+ctx.strokeStyle=col('--ac');ctx.lineWidth=3;
+for(const e of[1,-1]){ctx.beginPath();for(let i=0;i<=500;i++){const s=-S+2*S*i/500,u=e*R.a*Math.cosh(s),w=R.b*Math.sinh(s),x=R.h+u*R.t.x+w*R.n.x,y=R.k+u*R.t.y+w*R.n.y;i?ctx.lineTo(X(x),Y(y)):ctx.moveTo(X(x),Y(y))}ctx.stroke()}
+for(const o of pts()){ctx.fillStyle=o.col;ctx.beginPath();ctx.arc(X(o.p.x),Y(o.p.y),o===st.sel?9:6,0,7);ctx.fill();if(o===st.sel){ctx.strokeStyle=col('--fg');ctx.lineWidth=2;ctx.stroke()}
+ctx.fillStyle=col('--fg');ctx.font='bold 14px system-ui';if(st.vis.l)ctx.fillText(o.n,X(o.p.x)+9,Y(o.p.y)-9)}if(window.advDraw)advDraw()}
+function pts(){const R=st.R,v=st.vis,o=[];if(!R||R.ty!='hyp')return o;
+if(v.c)o.push({n:'C',k:'Center',p:{x:R.h,y:R.k},col:'#888'});
+if(v.v){o.push({n:'V₁',k:'Vertex',p:R.V[0],col:col('--c1')},{n:'V₂',k:'Vertex',p:R.V[1],col:col('--c1')})}
+if(v.f){o.push({n:'F₁',k:'Focus',p:R.Fo[0],col:col('--c2')},{n:'F₂',k:'Focus',p:R.Fo[1],col:col('--c2')})}return o}
+function pick(mx,my){const R=st.R;if(!R||R.ty!='hyp')return;let best=null,bd=28;
+for(const o of pts()){const d=Math.hypot(X(o.p.x)-mx,Y(o.p.y)-my);if(d<bd){bd=d;best=o}}
+if(best){st.sel=best;const ex=!R.rot;$('#sel').textContent=`${best.n} — ${best.k}\nExact: ${(()=>{const e=`(${num(best.p.x)}, ${num(best.p.y)})`;return e.includes('null')?'(irrational — see approx)':ex&&best.k=='Center'?e:e.includes('null')?'n/a':e})()}\nApprox: (${dec(best.p.x)}, ${dec(best.p.y)})`;draw();return}
+let bl=null;bd=14;const X0=(mx-st.W/2)/st.V.s+st.V.x,Y0=-(my-st.H/2)/st.V.s+st.V.y;
+const ls=[];if(st.vis.a)R.L.a.forEach((l,i)=>ls.push(['Asymptote '+(i+1),l]));if(st.vis.d)R.L.d.forEach((l,i)=>ls.push(['Directrix '+(i+1),l]));if(st.vis.ax)R.L.ax.forEach((l,i)=>ls.push([i?'Conjugate axis':'Transverse axis',l]));
+for(const[n,[p,u]]of ls){const L=Math.hypot(u.x,u.y),d=Math.abs((X0-p.x)*u.y-(Y0-p.y)*u.x)/L*st.V.s;if(d<bd){bd=d;bl=[n,[p,u]]}}
+if(bl){st.sel=null;$('#sel').textContent=`${bl[0]}\n${lineEq(bl[1])}`;draw()}else{st.sel=null;$('#sel').textContent=`Point (${dec(X0)}, ${dec(Y0)})`;draw()}}
 function fit(){const R=st.R;if(!R||R.ty!='hyp'){st.V={x:0,y:0,s:40};return}const m=Math.max(R.a,R.b,R.c);const r=cv.getBoundingClientRect();st.V={x:R.h,y:R.k,s:Math.min(r.width,r.height)/(m*4.4)}}
-
 // pan / zoom
 const ptr=new Map();let moved=0,pd=0;
 cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);ptr.set(e.pointerId,[e.offsetX,e.offsetY]);moved=0;pd=0});
-cv.addEventListener('pointermove',e=>{
-  if(!ptr.has(e.pointerId))return;const o=ptr.get(e.pointerId);
-  if(ptr.size==1){st.V.x-=(e.offsetX-o[0])/st.V.s;st.V.y+=(e.offsetY-o[1])/st.V.s;moved+=Math.abs(e.offsetX-o[0])+Math.abs(e.offsetY-o[1]);ptr.set(e.pointerId,[e.offsetX,e.offsetY])}
-  else if(ptr.size==2){ptr.set(e.pointerId,[e.offsetX,e.offsetY]);const[a,b]=[...ptr.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pd)st.V.s=Math.min(1e5,Math.max(.5,st.V.s*d/pd));pd=d;moved+=9}
-  draw();
-});
+cv.addEventListener('pointermove',e=>{if(!ptr.has(e.pointerId))return;const o=ptr.get(e.pointerId);
+if(ptr.size==1){st.V.x-=(e.offsetX-o[0])/st.V.s;st.V.y+=(e.offsetY-o[1])/st.V.s;moved+=Math.abs(e.offsetX-o[0])+Math.abs(e.offsetY-o[1]);ptr.set(e.pointerId,[e.offsetX,e.offsetY])}
+else if(ptr.size==2){ptr.set(e.pointerId,[e.offsetX,e.offsetY]);const[a,b]=[...ptr.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pd)st.V.s=Math.min(1e5,Math.max(.5,st.V.s*d/pd));pd=d;moved+=9}draw()});
 const up=e=>{if(ptr.has(e.pointerId)&&ptr.size==1&&moved<6)pick(e.offsetX,e.offsetY);ptr.delete(e.pointerId);pd=0};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 cv.addEventListener('wheel',e=>{e.preventDefault();st.V.s=Math.min(1e5,Math.max(.5,st.V.s*(e.deltaY<0?1.15:1/1.15)));draw()},{passive:false});
 const zoom=f=>{st.V.s*=f;draw()};$('#zi').onclick=()=>zoom(1.3);$('#zo').onclick=()=>zoom(1/1.3);$('#fit').onclick=()=>{fit();draw()};
-
 // ---------- app ----------
-function update(){
-  const msg=$('#msg');let ok=false;
-  try{
-    const c=parse(inp.value),R=analyze(c);st.R=R;
-    if(R.ty=='hyp'){msg.className='ok';msg.textContent='✓ Hyperbola recognised.';ok=true;inp.classList.remove('bad')}
-    else{msg.className='err';msg.textContent=R.msg;inp.classList.add('bad')}
-  }catch(e){st.R=null;msg.className='err';msg.textContent=typeof e=='string'?e:'Something went wrong reading that equation.';inp.classList.add('bad')}
-  st.sel=null;renderRes();draw();return ok;
-}
+function update(){const msg=$('#msg');let ok=false;
+try{const c=parse(inp.value),R=analyze(c);st.R=R;
+if(R.ty=='hyp'){msg.className='ok';msg.textContent='✓ Hyperbola recognised.';ok=true;inp.classList.remove('bad')}else{msg.className='err';msg.textContent=R.msg;inp.classList.add('bad')}}
+catch(e){st.R=null;msg.className='err';msg.textContent=typeof e=='string'?e:'Something went wrong reading that equation.';inp.classList.add('bad')}
+st.sel=null;renderRes();draw();return ok}
 function saveHist(){try{if(!st.R||st.R.ty!='hyp')return;let h=JSON.parse(localStorage.getItem('hh')||'[]').filter(x=>x!=inp.value);h.unshift(inp.value);localStorage.setItem('hh',JSON.stringify(h.slice(0,8)))}catch(e){}renderHist()}
 function renderHist(){let h=[];try{h=JSON.parse(localStorage.getItem('hh')||'[]')}catch(e){}$('#hist').innerHTML='';h.forEach(x=>mk($('#hist'),x,()=>set(x)))}
 function mk(p,t,f){const b=document.createElement('button');b.textContent=t;b.onclick=f;p.appendChild(b)}
 function set(v,z){inp.value=v;if(update())fit(),draw();saveHist()}
-
-KEYS.forEach(k=>mk($('#keys'),k,()=>{
-  const s=inp.selectionStart,e=inp.selectionEnd,v=inp.value;
-  if(k=='⌫'){if(s==e){inp.value=v.slice(0,Math.max(0,s-1))+v.slice(e);inp.setSelectionRange(Math.max(0,s-1),Math.max(0,s-1))}else{inp.value=v.slice(0,s)+v.slice(e);inp.setSelectionRange(s,s)}}
-  else{inp.value=v.slice(0,s)+k+v.slice(e);inp.setSelectionRange(s+k.length,s+k.length)}
-  update();if(st.R&&st.R.ty=='hyp'){fit();draw()}inp.focus();
-}));
-
+KEYS.forEach(k=>mk($('#keys'),k,()=>{const s=inp.selectionStart,e=inp.selectionEnd,v=inp.value;
+if(k=='⌫'){if(s==e){inp.value=v.slice(0,Math.max(0,s-1))+v.slice(e);inp.setSelectionRange(Math.max(0,s-1),Math.max(0,s-1))}else{inp.value=v.slice(0,s)+v.slice(e);inp.setSelectionRange(s,s)}}
+else{inp.value=v.slice(0,s)+k+v.slice(e);inp.setSelectionRange(s+k.length,s+k.length)}update();if(st.R&&st.R.ty=='hyp'){fit();draw()}inp.focus()}));
 EX.forEach(x=>mk($('#ex'),x,()=>set(x)));
 VIS.forEach(([k,n])=>{const b=document.createElement('button');b.textContent=n;b.setAttribute('aria-pressed',!!st.vis[k]);b.onclick=()=>{st.vis[k]=st.vis[k]?0:1;b.setAttribute('aria-pressed',!!st.vis[k]);st.sel=null;draw()};$('#vis').appendChild(b)});
 inp.addEventListener('change',saveHist);
 $('#clr').onclick=()=>{inp.value='';update();inp.focus()};
-$('#rnd').onclick=()=>{
-  const a=1+Math.floor(Math.random()*7),b=1+Math.floor(Math.random()*7),h=Math.floor(Math.random()*7)-3,k=Math.floor(Math.random()*7)-3,f=(z,w)=>z?`(${w}${z<0?'+':'-'}${Math.abs(z)})`:w;
-  set(Math.random()<.5?`${f(h,'x')}²/${a*a} - ${f(k,'y')}²/${b*b} = 1`:`${f(k,'y')}²/${a*a} - ${f(h,'x')}²/${b*b} = 1`);
-};
-$('#cpy').onclick=async()=>{
-  const t=[...document.querySelectorAll('#res .r')].map(r=>r.innerText.replace(/\n+/g,': ')).join('\n');
-  try{await navigator.clipboard.writeText(t);$('#cpy').textContent='Copied ✓'}catch(e){$('#cpy').textContent='Copy blocked here'}
-  setTimeout(()=>$('#cpy').textContent='Copy results',1500);
-};
+$('#rnd').onclick=()=>{const a=1+Math.floor(Math.random()*7),b=1+Math.floor(Math.random()*7),h=Math.floor(Math.random()*7)-3,k=Math.floor(Math.random()*7)-3,f=(z,w)=>z?`(${w}${z<0?'+':'-'}${Math.abs(z)})`:w;
+set(Math.random()<.5?`${f(h,'x')}²/${a*a} - ${f(k,'y')}²/${b*b} = 1`:`${f(k,'y')}²/${a*a} - ${f(h,'x')}²/${b*b} = 1`)};
+$('#cpy').onclick=async()=>{const t=[...document.querySelectorAll('#res .r')].map(r=>r.innerText.replace(/\n+/g,': ')).join('\n');try{await navigator.clipboard.writeText(t);$('#cpy').textContent='Copied ✓'}catch(e){$('#cpy').textContent='Copy blocked here'}setTimeout(()=>$('#cpy').textContent='Copy results',1500)};
 $('#mode').onchange=$('#prec').onchange=()=>{renderRes();draw()};
-$('#theme').onchange=e=>{
-  const v=e.target.value;v=='system'?document.documentElement.removeAttribute('data-theme'):document.documentElement.setAttribute('data-theme',v);
-  try{localStorage.setItem('th',v)}catch(x){}draw();
-};
+$('#theme').onchange=e=>{const v=e.target.value;v=='system'?document.documentElement.removeAttribute('data-theme'):document.documentElement.setAttribute('data-theme',v);try{localStorage.setItem('th',v)}catch(x){}draw()};
 try{const t=localStorage.getItem('th');if(t){$('#theme').value=t;$('#theme').onchange({target:{value:t}})}}catch(e){}
-
-$('#pres').onclick=()=>{
-  const on=document.body.classList.toggle('pres');$('#pres').textContent=on?'✕ Exit':'⛶ Present';
-  try{on?document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen():document.fullscreenElement&&document.exitFullscreen()}catch(e){}
-  setTimeout(()=>{fit();draw()},150);
-};
+$('#pres').onclick=()=>{const on=document.body.classList.toggle('pres');$('#pres').textContent=on?'✕ Exit':'⛶ Present';
+try{on?document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen():document.fullscreenElement&&document.exitFullscreen()}catch(e){}setTimeout(()=>{fit();draw()},150)};
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('pres')){document.body.classList.remove('pres');$('#pres').textContent='⛶ Present';setTimeout(()=>{fit();draw()},150)}});
 new ResizeObserver(draw).observe(cv);matchMedia('(prefers-color-scheme:dark)').addEventListener('change',draw);
 renderHist();update();fit();draw();
 </script>
-
 <script>
-/* Hyperbola Advanced Math Module */
+/*HM*/
 const HM={
-  P2(R,u,v){return{x:R.h+u*R.t.x+v*R.n.x,y:R.k+u*R.t.y+v*R.n.y}},
-  U(R,x,y){const dx=x-R.h,dy=y-R.k;return[dx*R.t.x+dy*R.t.y,dx*R.n.x+dy*R.n.y]},
-  L(R,al,be,ga){const{t,n,h,k}=R;return{A:al*t.x+be*n.x,B:al*t.y+be*n.y,C:ga+al*(h*t.x+k*t.y)+be*(h*n.x+k*n.y)}},
-  S(R,u,v){return u*u/R.a2-v*v/R.b2},
-  par(R,th){const c=Math.cos(th);if(Math.abs(c)<1e-6)return null;const u=R.a/c,v=R.b*Math.tan(th);return{u,v,p:HM.P2(R,u,v)}},
-  thOf(R,u,v){let t=Math.atan2(v/R.b*R.a/u,R.a/u);return t<0?t+2*Math.PI:t},
-  tan(R,u,v){return HM.L(R,u/R.a2,-v/R.b2,1)},
-  nor(R,u,v){return Math.abs(v)<1e-9?HM.L(R,0,1,0):HM.L(R,R.a2/u,R.b2/v,R.a2+R.b2)},
-  pole(R,al,be,ga){return Math.abs(ga)<1e-12?null:[al*R.a2/ga,-be*R.b2/ga]},
-  isect(R,q,d){
-    const A=d[0]*d[0]/R.a2-d[1]*d[1]/R.b2,B=2*(q[0]*d[0]/R.a2-q[1]*d[1]/R.b2),C=HM.S(R,q[0],q[1])-1,z=B*B+1;let r=[];
-    if(Math.abs(A)<1e-12*(Math.abs(B)+Math.abs(C)+1)){if(Math.abs(B)>1e-12)r=[-C/B]}
-    else{const D=B*B-4*A*C;if(D>-1e-9*z)r=D<1e-9*z?[-B/(2*A)]:[(-B-Math.sqrt(D))/(2*A),(-B+Math.sqrt(D))/(2*A)]}
-    return r.map(l=>[q[0]+l*d[0],q[1]+l*d[1]]);
-  },
-  contacts(R,u1,v1){const al=u1/R.a2,be=-v1/R.b2,m=al*al+be*be;return m<1e-18?null:HM.isect(R,[al/m,be/m],[-be,al])},
-  mu(R,m){const du=R.t.x+m*R.t.y,dv=R.n.x+m*R.n.y;return Math.abs(du)<1e-12?Infinity:dv/du},
-  slopeTan(R,m){
-    const mu=HM.mu(R,m);if(mu===Infinity)return{mu,c2:NaN,lines:[HM.L(R,1,0,R.a),HM.L(R,1,0,-R.a)],pts:[[R.a,0],[-R.a,0]]};
-    const c2=R.a2*mu*mu-R.b2;if(c2<-1e-9*(R.b2+1))return{mu,c2,none:1};if(Math.abs(c2)<1e-9*(R.b2+1))return{mu,c2,asym:1};
-    const c0=Math.sqrt(c2),lines=[],pts=[];for(const s of[1,-1]){const c=s*c0;lines.push(HM.L(R,-mu,1,c));pts.push([-R.a2*mu/c,-R.b2/c])}return{mu,c2,lines,pts};
-  },
-  diam(R,m){
-    const mu=HM.mu(R,m);if(mu===Infinity)return{mu,dia:HM.L(R,0,1,0),conj:HM.L(R,1,0,0),mup:0,meets:true};
-    if(Math.abs(mu)<1e-12)return{mu,dia:HM.L(R,1,0,0),conj:HM.L(R,0,1,0),mup:Infinity,meets:false};
-    return{mu,dia:HM.L(R,R.b2,-R.a2*mu,0),conj:HM.L(R,-mu,1,0),mup:R.b2/(R.a2*mu),meets:Math.abs(mu)>R.b/R.a};
-  },
-  normalsFrom(R,u1,v1){
-    const out=[],c2=R.a2+R.b2;
-    for(const br of[1,-1]){
-      const f=s=>R.a2*u1/(br*R.a*Math.cosh(s))+R.b2*v1/(R.b*Math.sinh(s))-c2;let p=-9,fp=f(p);
-      for(let i=1;i<=6000;i++){
-        const s=-9+18*i/6000,fs=f(s);
-        if(isFinite(fp)&&isFinite(fs)&&fp*fs<0){
-          let lo=p,hi=s,fl=fp;
-          for(let j=0;j<70;j++){const mid=(lo+hi)/2,fm=f(mid);if(fm*fl<=0)hi=mid;else{lo=mid;fl=fm}}
-          const s0=(lo+hi)/2;if(Math.abs(f(s0))<1e-6*c2)out.push([br*R.a*Math.cosh(s0),R.b*Math.sinh(s0)]);
-        }
-        p=s;fp=fs;
-      }
-    }
-    if(Math.abs(v1)<1e-9)out.push([R.a,0],[-R.a,0]);
-    return out.filter((z,i)=>out.findIndex(w=>Math.hypot(w[0]-z[0],w[1]-z[1])<1e-6*(1+R.a))==i);
-  },
-  check(R){
-    const e=[],c=R.c,q=R.q,sc=Math.max(...[q.A,q.B,q.C,q.D,q.E,q.F].map(Math.abs),1);
-    const g=p=>q.A*p.x*p.x+q.B*p.x*p.y+q.C*p.y*p.y+q.D*p.x+q.E*p.y+q.F,d=(p,r)=>Math.hypot(p.x-r.x,p.y-r.y);
-    R.V.forEach((p,i)=>{if(Math.abs(g(p))>1e-8*sc*(1+p.x*p.x+p.y*p.y))e.push('vertex '+(i+1)+' fails the equation')});
-    if(Math.abs(c*c-R.a2-R.b2)>1e-9*(1+c*c))e.push('c² ≠ a²+b²');if(Math.abs(R.e-c/R.a)>1e-9*R.e)e.push('e ≠ c/a');
-    if(Math.abs(Math.abs(d(R.V[0],R.Fo[0])-d(R.V[0],R.Fo[1]))-2*R.a)>1e-8*(1+R.a))e.push('focal-difference property fails');
-    const dl=R.L.d[0],n=Math.hypot(dl[1].x,dl[1].y),dd=Math.abs((R.V[0].x-dl[0].x)*dl[1].y-(R.V[0].y-dl[0].y)*dl[1].x)/n,ff=Math.min(d(R.V[0],R.Fo[0]),d(R.V[0],R.Fo[1]));
-    if(Math.abs(ff/dd-R.e)>1e-8*R.e)e.push('directrix ratio ≠ e');
-    const s=10,pf=HM.P2(R,R.a*Math.cosh(s),R.b*Math.sinh(s)),ds=R.L.a.map(([p0,u])=>Math.abs((pf.x-p0.x)*u.y-(pf.y-p0.y)*u.x)/Math.hypot(u.x,u.y));
-    if(Math.min(...ds)>1e-3*(R.a+R.b))e.push('asymptote check fails');
-    return e;
-  }
-};
-
+P2(R,u,v){return{x:R.h+u*R.t.x+v*R.n.x,y:R.k+u*R.t.y+v*R.n.y}},
+U(R,x,y){const dx=x-R.h,dy=y-R.k;return[dx*R.t.x+dy*R.t.y,dx*R.n.x+dy*R.n.y]},
+L(R,al,be,ga){const{t,n,h,k}=R;return{A:al*t.x+be*n.x,B:al*t.y+be*n.y,C:ga+al*(h*t.x+k*t.y)+be*(h*n.x+k*n.y)}},
+S(R,u,v){return u*u/R.a2-v*v/R.b2},
+par(R,th){const c=Math.cos(th);if(Math.abs(c)<1e-6)return null;const u=R.a/c,v=R.b*Math.tan(th);return{u,v,p:HM.P2(R,u,v)}},
+thOf(R,u,v){let t=Math.atan2(v/R.b*R.a/u,R.a/u);return t<0?t+2*Math.PI:t},
+tan(R,u,v){return HM.L(R,u/R.a2,-v/R.b2,1)},
+nor(R,u,v){return Math.abs(v)<1e-9?HM.L(R,0,1,0):HM.L(R,R.a2/u,R.b2/v,R.a2+R.b2)},
+pole(R,al,be,ga){return Math.abs(ga)<1e-12?null:[al*R.a2/ga,-be*R.b2/ga]},
+isect(R,q,d){const A=d[0]*d[0]/R.a2-d[1]*d[1]/R.b2,B=2*(q[0]*d[0]/R.a2-q[1]*d[1]/R.b2),C=HM.S(R,q[0],q[1])-1,z=B*B+1;let r=[];
+if(Math.abs(A)<1e-12*(Math.abs(B)+Math.abs(C)+1)){if(Math.abs(B)>1e-12)r=[-C/B]}else{const D=B*B-4*A*C;if(D>-1e-9*z)r=D<1e-9*z?[-B/(2*A)]:[(-B-Math.sqrt(D))/(2*A),(-B+Math.sqrt(D))/(2*A)]}
+return r.map(l=>[q[0]+l*d[0],q[1]+l*d[1]])},
+contacts(R,u1,v1){const al=u1/R.a2,be=-v1/R.b2,m=al*al+be*be;return m<1e-18?null:HM.isect(R,[al/m,be/m],[-be,al])},
+mu(R,m){const du=R.t.x+m*R.t.y,dv=R.n.x+m*R.n.y;return Math.abs(du)<1e-12?Infinity:dv/du},
+slopeTan(R,m){const mu=HM.mu(R,m);if(mu===Infinity)return{mu,c2:NaN,lines:[HM.L(R,1,0,R.a),HM.L(R,1,0,-R.a)],pts:[[R.a,0],[-R.a,0]]};
+const c2=R.a2*mu*mu-R.b2;if(c2<-1e-9*(R.b2+1))return{mu,c2,none:1};if(Math.abs(c2)<1e-9*(R.b2+1))return{mu,c2,asym:1};
+const c0=Math.sqrt(c2),lines=[],pts=[];for(const s of[1,-1]){const c=s*c0;lines.push(HM.L(R,-mu,1,c));pts.push([-R.a2*mu/c,-R.b2/c])}return{mu,c2,lines,pts}},
+diam(R,m){const mu=HM.mu(R,m);if(mu===Infinity)return{mu,dia:HM.L(R,0,1,0),conj:HM.L(R,1,0,0),mup:0,meets:true};
+if(Math.abs(mu)<1e-12)return{mu,dia:HM.L(R,1,0,0),conj:HM.L(R,0,1,0),mup:Infinity,meets:false};
+return{mu,dia:HM.L(R,R.b2,-R.a2*mu,0),conj:HM.L(R,-mu,1,0),mup:R.b2/(R.a2*mu),meets:Math.abs(mu)>R.b/R.a}},
+normalsFrom(R,u1,v1){const out=[],c2=R.a2+R.b2;
+for(const br of[1,-1]){const f=s=>R.a2*u1/(br*R.a*Math.cosh(s))+R.b2*v1/(R.b*Math.sinh(s))-c2;let p=-9,fp=f(p);
+for(let i=1;i<=6000;i++){const s=-9+18*i/6000,fs=f(s);if(isFinite(fp)&&isFinite(fs)&&fp*fs<0){let lo=p,hi=s,fl=fp;for(let j=0;j<70;j++){const mid=(lo+hi)/2,fm=f(mid);if(fm*fl<=0)hi=mid;else{lo=mid;fl=fm}}
+const s0=(lo+hi)/2;if(Math.abs(f(s0))<1e-6*c2)out.push([br*R.a*Math.cosh(s0),R.b*Math.sinh(s0)])}p=s;fp=fs}}
+if(Math.abs(v1)<1e-9)out.push([R.a,0],[-R.a,0]);
+return out.filter((z,i)=>out.findIndex(w=>Math.hypot(w[0]-z[0],w[1]-z[1])<1e-6*(1+R.a))==i)},
+check(R){const e=[],c=R.c,q=R.q,sc=Math.max(...[q.A,q.B,q.C,q.D,q.E,q.F].map(Math.abs),1);
+const g=p=>q.A*p.x*p.x+q.B*p.x*p.y+q.C*p.y*p.y+q.D*p.x+q.E*p.y+q.F,d=(p,r)=>Math.hypot(p.x-r.x,p.y-r.y);
+R.V.forEach((p,i)=>{if(Math.abs(g(p))>1e-8*sc*(1+p.x*p.x+p.y*p.y))e.push('vertex '+(i+1)+' fails the equation')});
+if(Math.abs(c*c-R.a2-R.b2)>1e-9*(1+c*c))e.push('c² ≠ a²+b²');if(Math.abs(R.e-c/R.a)>1e-9*R.e)e.push('e ≠ c/a');
+if(Math.abs(Math.abs(d(R.V[0],R.Fo[0])-d(R.V[0],R.Fo[1]))-2*R.a)>1e-8*(1+R.a))e.push('focal-difference property fails');
+const dl=R.L.d[0],n=Math.hypot(dl[1].x,dl[1].y),dd=Math.abs((R.V[0].x-dl[0].x)*dl[1].y-(R.V[0].y-dl[0].y)*dl[1].x)/n,ff=Math.min(d(R.V[0],R.Fo[0]),d(R.V[0],R.Fo[1]));
+if(Math.abs(ff/dd-R.e)>1e-8*R.e)e.push('directrix ratio ≠ e');
+const s=10,pf=HM.P2(R,R.a*Math.cosh(s),R.b*Math.sinh(s)),ds=R.L.a.map(([p0,u])=>Math.abs((pf.x-p0.x)*u.y-(pf.y-p0.y)*u.x)/Math.hypot(u.x,u.y));if(Math.min(...ds)>1e-3*(R.a+R.b))e.push('asymptote check fails');
+return e}};
+/*ENDHM*/
 const AD={on:{tan:1,nor:0,chd:0,foc:0,tq:0,pol:0,nq:0,sl:0,dia:0,mid:0,cj:0,ref:0},der:0,R:null};
 const ADL=[['tan','Tangent at P'],['nor','Normal at P'],['chd','Chord P–P₂'],['foc','Focal chord'],['tq','Tangents from Q'],['pol','Polar of Q'],['nq','Normals from Q'],['sl','Slope tangents'],['dia','Diameters'],['mid','Midpoint chord'],['cj','Conjugate'],['ref','Reflection']];
 const adv=document.createElement('section');adv.className='card';adv.id='adv';
@@ -355,105 +244,76 @@ adv.innerHTML=`<h3 style="margin:0 0 8px">Advanced JEE tools</h3>
 <div class="ins" id="abk"><span>Edit (axis-aligned only):</span><label>a <input id="pa" type="number" step="any" min="0.01"></label><label>b <input id="pb" type="number" step="any" min="0.01"></label><label>h <input id="ph" type="number" step="any"></label><label>k <input id="pk" type="number" step="any"></label></div>
 <div class="chips" id="advt"></div><label style="display:block;margin:8px 0"><input id="der" type="checkbox"> Show derivation</label><div id="advo"></div>`;
 $('#res').after(adv);
-
 ADL.forEach(([k,n])=>{const b=document.createElement('button');b.textContent=n;b.setAttribute('aria-pressed',!!AD.on[k]);b.onclick=()=>{AD.on[k]=AD.on[k]?0:1;b.setAttribute('aria-pressed',!!AD.on[k]);advRender()};$('#advt').appendChild(b)});
 adv.querySelectorAll('.ins input:not(#pa):not(#pb):not(#ph):not(#pk)').forEach(i=>i.oninput=()=>advRender());$('#der').onchange=e=>{AD.der=e.target.checked;advRender()};
-['pa','pb','ph','pk'].forEach(id=>$('#'+id).oninput=()=>{
-  const R=st.R,a=+$('#pa').value,b=+$('#pb').value,h=+$('#ph').value,k=+$('#pk').value;
-  if(!R||R.rot||!(a>0)||!(b>0)||!isFinite(h)||!isFinite(k)){$('#msg').className='err';$('#msg').textContent='a and b must be positive numbers; h, k any number.';return}
-  const f=(z,w)=>z?`(${w}${z<0?'+':'-'}${Math.abs(z)})`:w,H=Math.abs(R.t.y)<1e-9;inp.value=H?`${f(h,'x')}^2/(${a})^2 - ${f(k,'y')}^2/(${b})^2 = 1`:`${f(k,'y')}^2/(${a})^2 - ${f(h,'x')}^2/(${b})^2 = 1`;update();
-});
-$('#setq').onclick=()=>{
-  const R=st.R;if(!R)return;const[u,v]=HM.U(R,+$('#x0').value,+$('#y0').value);
-  if(Math.abs(HM.S(R,u,v)-1)>1e-6||Math.abs(u)<1e-9){$('#msg').className='err';$('#msg').textContent='Q is not on the hyperbola, so it has no parameter θ.';return}
-  $('#th').value=HM.thOf(R,u,v).toFixed(6);advRender();
-};
-
+['pa','pb','ph','pk'].forEach(id=>$('#'+id).oninput=()=>{const R=st.R,a=+$('#pa').value,b=+$('#pb').value,h=+$('#ph').value,k=+$('#pk').value;
+if(!R||R.rot||!(a>0)||!(b>0)||!isFinite(h)||!isFinite(k)){$('#msg').className='err';$('#msg').textContent='a and b must be positive numbers; h, k any number.';return}
+const f=(z,w)=>z?`(${w}${z<0?'+':'-'}${Math.abs(z)})`:w,H=Math.abs(R.t.y)<1e-9;inp.value=H?`${f(h,'x')}^2/(${a})^2 - ${f(k,'y')}^2/(${b})^2 = 1`:`${f(k,'y')}^2/(${a})^2 - ${f(h,'x')}^2/(${b})^2 = 1`;update()});
+$('#setq').onclick=()=>{const R=st.R;if(!R)return;const[u,v]=HM.U(R,+$('#x0').value,+$('#y0').value);if(Math.abs(HM.S(R,u,v)-1)>1e-6||Math.abs(u)<1e-9){$('#msg').className='err';$('#msg').textContent='Q is not on the hyperbola, so it has no parameter θ.';return}$('#th').value=HM.thOf(R,u,v).toFixed(6);advRender()};
 $('#q').oninput=applyQ;document.addEventListener('click',e=>{if(e.target.classList.contains('cp')){const r=e.target.parentElement;navigator.clipboard&&navigator.clipboard.writeText(r.querySelector('b').textContent+': '+r.querySelector('span').innerText)}});
 const lt=l=>{const s=Math.max(Math.abs(l.A),Math.abs(l.B))||1,A=l.A/s,B=l.B/s;return`${dec(A)}x ${B<0?'−':'+'} ${dec(Math.abs(B))}y = ${dec(l.C/s)}`};
 const rw=(k,v)=>`<div class="r"><b>${k}</b><span>${v}</span><button class="cp" aria-label="Copy"></button></div>`,fm=t=>`<div class="fm">${t}</div>`,dt=(t,b)=>`<details><summary>${t}</summary>${b}</details>`;
 const pp=(p)=>`(${dec(p.x)}, ${dec(p.y)})`,uv=(R,u,v)=>pp(HM.P2(R,u,v));
-
-function advRender(){
-  const R=st.R,o=$('#advo');document.querySelectorAll('#res .r:not(:has(.cp))').forEach(r=>{const b=document.createElement('button');b.className='cp';b.setAttribute('aria-label','Copy');r.appendChild(b)});
-  if(!R||R.ty!='hyp'){o.innerHTML='';st.adv=null;return}
-  if(AD.R!==R){AD.R=R;const q=HM.P2(R,.4*R.a,1.2*R.b);$('#x0').value=+q.x.toFixed(3);$('#y0').value=+q.y.toFixed(3);
-  if(!R.rot)[['pa',R.a],['pb',R.b],['ph',R.h],['pk',R.k]].forEach(([i,v])=>{if(document.activeElement.id!=i)$('#'+i).value=+v.toFixed(6)})}
-  $('#abk').style.display=R.rot?'none':'';
-  const on=AD.on,G={lines:[],pts:[],segs:[],cj:on.cj},a=R.a,b=R.b,c=R.c,a2=R.a2,b2=R.b2,S={};
-  const add=(k,n,l,col,d)=>{if(on[k]&&l)G.lines.push({n,l,col,d})},ap=(k,n,p,col)=>{if(on[k])G.pts.push({n,p,col})},sc=(k,h)=>S[k]=(S[k]||'')+h;
-  const th=+$('#th').value,th2=+$('#th2').value,Qx=+$('#x0').value,Qy=+$('#y0').value,m=+$('#sm').value,RED='#e03131',PUR='#8e44ad',TEAL='#0c8599';
-  const P=HM.par(R,th),P2=HM.par(R,th2),[u1,v1]=isFinite(Qx+Qy)?HM.U(R,Qx,Qy):[NaN,NaN],S1=HM.S(R,u1,v1);
-  sc('par',fm('Standard: (u, v) = (a secθ, b tanθ) with u,v measured along the transverse/conjugate axes. Variant: (a(t+1/t)/2, b(t−1/t)/2), t>0 right branch. Hyperbolic: (±a cosh s, b sinh s).')+rw('Parametric (principal)','(a secθ, b tanθ) = ('+dec(a)+' secθ, '+dec(b)+' tanθ)')+rw('Original coordinates','x = '+dec(R.h)+' + secθ·'+dec(a*R.t.x)+' + tanθ·'+dec(b*R.n.x)+'<br>y = '+dec(R.k)+' + secθ·'+dec(a*R.t.y)+' + tanθ·'+dec(b*R.n.y)));
-  if(!P)sc('par',rw('P(θ)','undefined: secθ does not exist when cos θ = 0'));else{sc('par',rw('P(θ) with θ = '+dec(th),pp(P.p))+rw('Parameter of Q (if on curve)',Math.abs(S1-1)<1e-6&&Math.abs(u1)>1e-9?dec(HM.thOf(R,u1,v1))+' rad':'Q is not on the hyperbola'));ap('tan','P',P.p,RED);ap('nor','P',P.p,RED);ap('ref','P',P.p,RED)}
-  if(P2&&on.chd)ap('chd','P₂',P2.p,PUR);
-  if(P){
-    const tl=HM.tan(R,P.u,P.v);add('tan','Tangent',tl,RED);sc('tan',fm('At (x₁,y₁): xx₁/a² − yy₁/b² = 1 (principal axes). Parametric: (x/a) secθ − (y/b) tanθ = 1.')+rw('Tangent at P',lt(tl))+rw('Slope form','v = μu ± √(a²μ² − b²)'));
-    const nl=HM.nor(R,P.u,P.v);add('nor','Normal',nl,PUR);sc('nor',fm('At (x₁,y₁): a²x/x₁ + b²y/y₁ = a²+b² (= c²). Parametric: ax cosθ + by cotθ = a²+b². At a vertex the normal is the transverse axis.')+rw('Normal at P (exact)',lt(nl)));
-    const F=[HM.P2(R,c,0),HM.P2(R,-c,0)],near=P.u>0?0:1,Fn=F[near],Ff=F[1-near],T=(l=>({x:-l.B,y:l.A}))(HM.tan(R,P.u,P.v)),tn=Math.hypot(T.x,T.y),nT={x:T.y/tn,y:-T.x/tn};
-    const iv={x:P.p.x-Fn.x,y:P.p.y-Fn.y},il=Math.hypot(iv.x,iv.y),i0={x:iv.x/il,y:iv.y/il},dp=i0.x*nT.x+i0.y*nT.y,rf={x:i0.x-2*dp*nT.x,y:i0.y-2*dp*nT.y},ov={x:P.p.x-Ff.x,y:P.p.y-Ff.y},ol=Math.hypot(ov.x,ov.y),cr=Math.abs(rf.x*ov.y-rf.y*ov.x)/ol,d1=Math.hypot(P.p.x-F[0].x,P.p.y-F[0].y),d2=Math.hypot(P.p.x-F[1].x,P.p.y-F[1].y);
-    if(on.ref){G.pts.push({n:'F₁',p:F[0],col:col('--c2')},{n:'F₂',p:F[1],col:col('--c2')});G.segs.push([Fn,P.p,TEAL],[P.p,{x:P.p.x+rf.x*8*a,y:P.p.y+rf.y*8*a},TEAL,1],[Ff,P.p,'#aaa',1]);add('ref','Tangent',tl,RED)}
-    sc('sp',fm('Reflection: the tangent at P bisects ∠F₁PF₂ (internal); a ray from one focus reflects along the line through P and the other focus. Focal radii: |PF₁| = |ex₁ − a|, |PF₂| = |ex₁ + a| (right branch).')+rw('|PF₁|, |PF₂|',dec(d1)+', '+dec(d2))+rw('||PF₁|−|PF₂||  vs 2a',dec(Math.abs(d1-d2))+' vs '+dec(2*a))+rw('Reflected ray ∥ (P − other focus)? ',cr<1e-8?'✓ verified (deviation '+cr.toExponential(1)+')':'✗ deviation '+cr.toExponential(1)));
-  }
-  sc('sp',rw('Rectangular?',Math.abs(a-b)<1e-9*a?'Yes (a = b): e = √2, asymptotes ⟂ (slopes multiply to −1), latus rectum = 2a'+(Math.abs(Math.abs(R.t.x)-Math.abs(R.t.y))<1e-9?'<br>Asymptotes are axis-parallel: (x−h)(y−k) = '+dec(Math.sign(R.t.x*R.t.y)*a2/2)+'; param (ct, c/t), c² = '+dec(a2/2):''):'No (a ≠ b); angle between asymptotes = '+dec(2*Math.atan(b/a)*180/Math.PI)+'°')+rw('Focal / latus rectum',fm('Latus rectum = 2b²/a; ends at (±c, ±b²/a); focal distance 2c; directrices u = ±a/e (= ±a²/c)')+'2b²/a = '+dec(2*b2/a)+'; 2c = '+dec(2*c)));
-  if(P2&&P){const ch=HM.L(R,Math.cos((th-th2)/2)/a,-Math.sin((th+th2)/2)/b,Math.cos((th+th2)/2));add('chd','Chord',ch,PUR);sc('chd',fm('Chord joining θ₁, θ₂: (x/a)cos((θ₁−θ₂)/2) − (y/b)sin((θ₁+θ₂)/2) = cos((θ₁+θ₂)/2)')+rw('Chord P–P₂',lt(ch))+rw('Length',dec(Math.hypot(P.p.x-P2.p.x,P.p.y-P2.p.y))))}else sc('chd',rw('Chord P–P₂','both parameters need cos θ ≠ 0'));
-  if(P){const F1=[c,0],d=[P.u-c,P.v],q2=HM.isect(R,F1,d).filter(z=>Math.hypot(z[0]-P.u,z[1]-P.v)>1e-9);if(q2.length){const Q2=q2[0],fl=HM.L(R,d[1],-d[0],d[1]*c);add('foc','Focal chord',fl,TEAL);ap('foc','P′',HM.P2(R,Q2[0],Q2[1]),TEAL);sc('chd',fm('Focal chord through F₁ = (c,0): the line P–F₁ meets the curve again at P′')+rw('Focal chord through P, F₁',lt(fl))+rw('Other end P′',uv(R,Q2[0],Q2[1]))+rw('Length',dec(Math.hypot(P.u-Q2[0],P.v-Q2[1]))))}else sc('chd',rw('Focal chord','line P–F₁ is parallel to an asymptote: no second point'))}
-  if(isFinite(u1+v1)){
-    const cen=Math.hypot(u1,v1)<1e-9;
-    if(cen){sc('pp',rw('Polar of Q','Q is the centre: its polar is the line at infinity (undefined)'))}
-    else{
-      const al=u1/a2,be=-v1/b2,pl=HM.L(R,al,be,1),cs=HM.contacts(R,u1,v1),pol=HM.pole(R,al,be,1);add('pol','Polar',pl,PUR);add('tq','Chord of contact',pl,PUR,1);ap('pol','Q',{x:Qx,y:Qy},PUR);ap('tq','Q',{x:Qx,y:Qy},PUR);ap('nq','Q',{x:Qx,y:Qy},PUR);ap('mid','Q',{x:Qx,y:Qy},PUR);
-      sc('pp',fm('Polar of (x₁,y₁): xx₁/a² − yy₁/b² = 1 (= T = 0). Pole of αx+βy=γ (γ≠0): (αa²/γ, −βb²/γ). Line through the centre has no pole (at infinity).')+rw('Polar of Q',lt(pl))+rw('Position of Q',S1>1+1e-9?'inside (S₁ > 1): polar meets no real tangent':Math.abs(S1-1)<1e-9?'on the curve: polar = tangent':'outside (S₁ < 1)')+rw('Reciprocal check: pole of that polar',pol&&Math.hypot(pol[0]-u1,pol[1]-v1)<1e-8*(1+Math.abs(u1)+Math.abs(v1))?'✓ returns Q':'✗ mismatch'));
-      sc('tq',fm('Pair of tangents: SS₁ = T², i.e. (u²/a² − v²/b² − 1)(S₁ − 1) = (uu₁/a² − vv₁/b² − 1)². Contact points = polar ∩ hyperbola.')+rw('S₁ = u₁²/a² − v₁²/b²',dec(S1)));
-      if(!cs.length)sc('tq',rw('Tangents from Q','none real: Q is inside (or its polar misses the curve)'));else cs.forEach((z,i)=>{const tl=HM.tan(R,z[0],z[1]);add('tq','Tangent '+(i+1),tl,RED);ap('tq','T'+(i+1),HM.P2(R,z[0],z[1]),RED);sc('tq',rw('Contact point T'+(i+1),uv(R,z[0],z[1]))+rw('Tangent '+(i+1),lt(tl)))});
-      if(cs.length==1)sc('tq',rw('Note','one tangent only: Q is on the curve, or the polar is parallel to an asymptote (second tangent is the asymptote)'));
-      if(!P)0;const nn=HM.normalsFrom(R,u1,v1);nn.forEach((z,i)=>{const nl=HM.nor(R,z[0],z[1]);add('nq','Normal '+(i+1),nl,PUR);ap('nq','N'+(i+1),HM.P2(R,z[0],z[1]),PUR)});
-      sc('nor',fm('Normals through Q: a²u₁/u₀ + b²v₁/v₀ = a²+b² — a quartic in the foot; solved NUMERICALLY (sign-change scan + bisection). At most 4.')+rw('Normals from Q (numerical)',nn.length+' real: '+nn.map(z=>uv(R,z[0],z[1])).join(', ')));
-      if(S1>1+1e-9){const dl=[-be,al],ic=HM.isect(R,[u1,v1],dl);const ml=HM.L(R,al,be,S1);add('mid','Midpoint chord',ml,TEAL);sc('chd',fm('Chord with midpoint (x₁,y₁): T = S₁, i.e. xx₁/a² − yy₁/b² = x₁²/a² − y₁²/b²')+rw('Chord bisected at Q',lt(ml))+(ic.length==2?rw('Length',dec(Math.hypot(ic[0][0]-ic[1][0],ic[0][1]-ic[1][1]))):''))}
-      else sc('chd',rw('Chord bisected at Q','no real chord: the midpoint must lie inside a branch (S₁ > 1)'));
-    }
-  }else sc('pp',rw('Q','enter valid numbers for Q'));
-
-  if(isFinite(m)){
-    const st_=HM.slopeTan(R,m);sc('tan',fm('Tangent of slope m: y = mx ± √(a²m² − b²); tangency condition c² = a²m² − b² (principal axes). Tangents parallel to a line = tangents of that slope.')+rw('Slope μ in principal axes',st_.mu===Infinity?'vertical (u = ±a)':dec(st_.mu)+'   ( a²μ²−b² = '+dec(st_.c2)+' )'));
-    if(st_.none)sc('tan',rw('Tangents of slope m','none: a²μ² − b² < 0 (|μ| < b/a, slope shallower than the asymptotes)'));else if(st_.asym)sc('tan',rw('Tangents of slope m','a²μ² = b²: only the asymptote direction; touches at infinity'));else st_.lines.forEach((l,i)=>{add('sl','Slope tangent '+(i+1),l,RED);sc('tan',rw('Tangent '+(i+1)+' of slope m',lt(l))+rw('Contact point',uv(R,st_.pts[i][0],st_.pts[i][1])))});
-    const dm=HM.diam(R,m);add('dia','Diameter',dm.dia,TEAL);add('dia','Conjugate diameter',dm.conj,RED,1);sc('dia',fm('Chords of slope μ have midpoints on the diameter v = (b²/(a²μ)) u. Conjugate diameters: μμ′ = b²/a². Each bisects chords parallel to the other.')+rw('Diameter bisecting chords of slope m',lt(dm.dia))+rw('Conjugate diameter (slope m)',lt(dm.conj))+rw('μ·μ′ = b²/a²',dm.mup===Infinity?'μ = 0: conjugate diameter is the conjugate axis':dec(dm.mu*dm.mup)+' = '+dec(b2/a2))+rw('Meets the hyperbola?',dm.meets?'diameter cuts the hyperbola; its conjugate does not':'diameter does not meet this hyperbola (|μ| < b/a) — it meets the conjugate'));
-  }
-  sc('cj',fm('Conjugate: v²/b² − u²/a² = 1. Same asymptotes and centre; transverse ↔ conjugate axes swap; e′ = c/b; 1/e² + 1/e′² = 1.')+rw('Equation (principal)','(v)²/'+dec(b2)+' − (u)²/'+dec(a2)+' = 1'+(R.rot?'':'<br>original form: '+(Math.abs(R.t.y)<1e-9?`(x−${dec(R.h)})²/${dec(a2)} − (y−${dec(R.k)})²/${dec(b2)} = −1`:`(y−${dec(R.k)})²/${dec(a2)} − (x−${dec(R.h)})²/${dec(b2)} = −1`)))+rw('Centre',pp({x:R.h,y:R.k}))+rw('Vertices',[b,-b].map(z=>uv(R,0,z)).join(', '))+rw('Foci',[c,-c].map(z=>uv(R,0,z)).join(', '))+rw('e′ = c/b',dec(c/b))+rw('Asymptotes',R.L.a.map(lineEq).join('<br>')));
-  const ck=HM.check(R);sc('ver',rw('Internal consistency',ck.length?'⚠ '+ck.join('; '):'✓ vertices, c²=a²+b², e=c/a, focal difference, directrix ratio, asymptotes all verified'));
-  if(AD.der){const q=R.q;sc('der',[`Original: ${eqn(q)}`,`Δ = B²−4AC = ${dec(q.B*q.B-4*q.A*q.C)} > 0 → hyperbola`,`Centre: solve 2Ax+By+D=0, Bx+2Cy+E=0 → (h,k) = (${dec(R.h)}, ${dec(R.k)})`,R.rot?`Rotate by θ = ½·atan2(B, A−C) = ${dec(Math.atan2(R.t.y,R.t.x)*180/Math.PI)}° to remove xy`:'B = 0: complete the squares in x and y',`Translate: X = x−h, Y = y−k → λ₁u²+λ₂v² = K`,`a² = ${dec(a2)}, b² = ${dec(b2)}`,`c² = a²+b² = ${dec(c*c)} → c = ${dec(c)}`,`e = c/a = ${dec(R.e)}`,`Vertices: centre ± a·(axis) = ${R.V.map(pp).join(', ')}`,`Foci: centre ± c·(axis) = ${R.Fo.map(pp).join(', ')}`,`Asymptotes: v = ±(b/a)u → ${R.L.a.map(lineEq).join(' ; ')}`].map((t,i)=>rw('Step '+(i+1),t)).join(''))}
-  o.innerHTML=[['par','Parametric form'],['tan','Tangents'],['nor','Normals'],['chd','Chords'],['pp','Pole & polar / pair of tangents'],['tq','Pair of tangents'],['dia','Diameters'],['cj','Conjugate hyperbola'],['sp','Special properties, focal & reflection'],['ver','Verification'],['der','Derivation']].filter(x=>S[x[0]]).map(x=>dt(x[1],S[x[0]])).join('');
-  st.adv=G;cv.setAttribute('role','img');cv.setAttribute('aria-label','Graph of the hyperbola centred at ('+dec(R.h)+', '+dec(R.k)+'), a = '+dec(R.a)+', b = '+dec(R.b)+', e = '+dec(R.e));applyQ();draw();
-}
-
-function applyQ(){const q=$('#q').value.trim().toLowerCase(),sy={focus:'foci',focal:'foci',directrix:'directri',vertex:'vertic',asymptote:'asymptot',normal:'normal',polar:'polar',pole:'pole',conjugate:'conjugate',chord:'chord',diameter:'diameter'},k=sy[q]||q;document.querySelectorAll('#res details,#advo details').forEach(d=>{const m=!q||d.textContent.toLowerCase().includes(k);d.style.display=m?'':'none';if(q&&m)d.open=true})}
-function advDraw(){
-  const G=st.adv;if(!G)return;const R=st.R,{W,H,V}=st;
-  if(G.cj){ctx.strokeStyle=col('--c1');ctx.lineWidth=2;ctx.setLineDash([10,6]);const big=Math.hypot(W,H)/V.s+Math.hypot(V.x-R.h,V.y-R.k),Sm=Math.asinh(2*big/Math.min(R.a,R.b))+1;
-  for(const e of[1,-1]){ctx.beginPath();for(let i=0;i<=500;i++){const s=-Sm+2*Sm*i/500,p=HM.P2(R,R.a*Math.sinh(s),e*R.b*Math.cosh(s));i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y))}ctx.stroke()}ctx.setLineDash([])}
-  for(const g of G.lines){const l=g.l,d=l.A*l.A+l.B*l.B;if(d<1e-24)continue;line({x:l.A*l.C/d,y:l.B*l.C/d},{x:-l.B,y:l.A},g.col,2.5,g.d?[7,6]:null)}
-  for(const s of G.segs){ctx.strokeStyle=s[2];ctx.lineWidth=2.5;ctx.setLineDash(s[3]?[8,6]:[]);ctx.beginPath();ctx.moveTo(X(s[0].x),Y(s[0].y));ctx.lineTo(X(s[1].x),Y(s[1].y));ctx.stroke();ctx.setLineDash([])}
-  for(const o of G.pts){ctx.fillStyle=o.col;ctx.beginPath();ctx.arc(X(o.p.x),Y(o.p.y),7,0,7);ctx.fill();ctx.fillStyle=col('--fg');ctx.font='bold 14px system-ui';if(st.vis.l)ctx.fillText(o.n,X(o.p.x)+9,Y(o.p.y)-9)}
-}
+function advRender(){const R=st.R,o=$('#advo');document.querySelectorAll('#res .r:not(:has(.cp))').forEach(r=>{const b=document.createElement('button');b.className='cp';b.setAttribute('aria-label','Copy');r.appendChild(b)});
+if(!R||R.ty!='hyp'){o.innerHTML='';st.adv=null;return}
+if(AD.R!==R){AD.R=R;const q=HM.P2(R,.4*R.a,1.2*R.b);$('#x0').value=+q.x.toFixed(3);$('#y0').value=+q.y.toFixed(3);
+if(!R.rot)[['pa',R.a],['pb',R.b],['ph',R.h],['pk',R.k]].forEach(([i,v])=>{if(document.activeElement.id!=i)$('#'+i).value=+v.toFixed(6)})}
+$('#abk').style.display=R.rot?'none':'';
+const on=AD.on,G={lines:[],pts:[],segs:[],cj:on.cj},a=R.a,b=R.b,c=R.c,a2=R.a2,b2=R.b2,S={};const add=(k,n,l,col,d)=>{if(on[k]&&l)G.lines.push({n,l,col,d})},ap=(k,n,p,col)=>{if(on[k])G.pts.push({n,p,col})},sc=(k,h)=>S[k]=(S[k]||'')+h;
+const th=+$('#th').value,th2=+$('#th2').value,Qx=+$('#x0').value,Qy=+$('#y0').value,m=+$('#sm').value,RED='#e03131',PUR='#8e44ad',TEAL='#0c8599';
+const P=HM.par(R,th),P2=HM.par(R,th2),[u1,v1]=isFinite(Qx+Qy)?HM.U(R,Qx,Qy):[NaN,NaN],S1=HM.S(R,u1,v1);
+sc('par',fm('Standard: (u, v) = (a secθ, b tanθ) with u,v measured along the transverse/conjugate axes. Variant: (a(t+1/t)/2, b(t−1/t)/2), t>0 right branch. Hyperbolic: (±a cosh s, b sinh s).')+rw('Parametric (principal)','(a secθ, b tanθ) = ('+dec(a)+' secθ, '+dec(b)+' tanθ)')+rw('Original coordinates','x = '+dec(R.h)+' + secθ·'+dec(a*R.t.x)+' + tanθ·'+dec(b*R.n.x)+'<br>y = '+dec(R.k)+' + secθ·'+dec(a*R.t.y)+' + tanθ·'+dec(b*R.n.y)));
+if(!P)sc('par',rw('P(θ)','undefined: secθ does not exist when cos θ = 0'));else{sc('par',rw('P(θ) with θ = '+dec(th),pp(P.p))+rw('Parameter of Q (if on curve)',Math.abs(S1-1)<1e-6&&Math.abs(u1)>1e-9?dec(HM.thOf(R,u1,v1))+' rad':'Q is not on the hyperbola'));ap('tan','P',P.p,RED);ap('nor','P',P.p,RED);ap('ref','P',P.p,RED)}
+if(P2&&on.chd)ap('chd','P₂',P2.p,PUR);
+if(P){const tl=HM.tan(R,P.u,P.v);add('tan','Tangent',tl,RED);sc('tan',fm('At (x₁,y₁): xx₁/a² − yy₁/b² = 1 (principal axes). Parametric: (x/a) secθ − (y/b) tanθ = 1.')+rw('Tangent at P',lt(tl))+rw('Slope form','v = μu ± √(a²μ² − b²)'));
+const nl=HM.nor(R,P.u,P.v);add('nor','Normal',nl,PUR);sc('nor',fm('At (x₁,y₁): a²x/x₁ + b²y/y₁ = a²+b² (= c²). Parametric: ax cosθ + by cotθ = a²+b². At a vertex the normal is the transverse axis.')+rw('Normal at P (exact)',lt(nl)));
+const F=[HM.P2(R,c,0),HM.P2(R,-c,0)],near=P.u>0?0:1,Fn=F[near],Ff=F[1-near],T=(l=>({x:-l.B,y:l.A}))(HM.tan(R,P.u,P.v)),tn=Math.hypot(T.x,T.y),nT={x:T.y/tn,y:-T.x/tn};
+const iv={x:P.p.x-Fn.x,y:P.p.y-Fn.y},il=Math.hypot(iv.x,iv.y),i0={x:iv.x/il,y:iv.y/il},dp=i0.x*nT.x+i0.y*nT.y,rf={x:i0.x-2*dp*nT.x,y:i0.y-2*dp*nT.y},ov={x:P.p.x-Ff.x,y:P.p.y-Ff.y},ol=Math.hypot(ov.x,ov.y),cr=Math.abs(rf.x*ov.y-rf.y*ov.x)/ol,d1=Math.hypot(P.p.x-F[0].x,P.p.y-F[0].y),d2=Math.hypot(P.p.x-F[1].x,P.p.y-F[1].y);
+if(on.ref){G.pts.push({n:'F₁',p:F[0],col:col('--c2')},{n:'F₂',p:F[1],col:col('--c2')});G.segs.push([Fn,P.p,TEAL],[P.p,{x:P.p.x+rf.x*8*a,y:P.p.y+rf.y*8*a},TEAL,1],[Ff,P.p,'#aaa',1]);add('ref','Tangent',tl,RED)}
+sc('sp',fm('Reflection: the tangent at P bisects ∠F₁PF₂ (internal); a ray from one focus reflects along the line through P and the other focus. Focal radii: |PF₁| = |ex₁ − a|, |PF₂| = |ex₁ + a| (right branch).')+rw('|PF₁|, |PF₂|',dec(d1)+', '+dec(d2))+rw('||PF₁|−|PF₂||  vs 2a',dec(Math.abs(d1-d2))+' vs '+dec(2*a))+rw('Reflected ray ∥ (P − other focus)? ',cr<1e-8?'✓ verified (deviation '+cr.toExponential(1)+')':'✗ deviation '+cr.toExponential(1)))}
+sc('sp',rw('Rectangular?',Math.abs(a-b)<1e-9*a?'Yes (a = b): e = √2, asymptotes ⟂ (slopes multiply to −1), latus rectum = 2a'+(Math.abs(Math.abs(R.t.x)-Math.abs(R.t.y))<1e-9?'<br>Asymptotes are axis-parallel: (x−h)(y−k) = '+dec(Math.sign(R.t.x*R.t.y)*a2/2)+'; param (ct, c/t), c² = '+dec(a2/2):''):'No (a ≠ b); angle between asymptotes = '+dec(2*Math.atan(b/a)*180/Math.PI)+'°')+rw('Focal / latus rectum',fm('Latus rectum = 2b²/a; ends at (±c, ±b²/a); focal distance 2c; directrices u = ±a/e (= ±a²/c)')+'2b²/a = '+dec(2*b2/a)+'; 2c = '+dec(2*c)));
+if(P2&&P){const ch=HM.L(R,Math.cos((th-th2)/2)/a,-Math.sin((th+th2)/2)/b,Math.cos((th+th2)/2));add('chd','Chord',ch,PUR);sc('chd',fm('Chord joining θ₁, θ₂: (x/a)cos((θ₁−θ₂)/2) − (y/b)sin((θ₁+θ₂)/2) = cos((θ₁+θ₂)/2)')+rw('Chord P–P₂',lt(ch))+rw('Length',dec(Math.hypot(P.p.x-P2.p.x,P.p.y-P2.p.y))))}else sc('chd',rw('Chord P–P₂','both parameters need cos θ ≠ 0'));
+if(P){const F1=[c,0],d=[P.u-c,P.v],q2=HM.isect(R,F1,d).filter(z=>Math.hypot(z[0]-P.u,z[1]-P.v)>1e-9);if(q2.length){const Q2=q2[0],fl=HM.L(R,d[1],-d[0],d[1]*c);add('foc','Focal chord',fl,TEAL);ap('foc','P′',HM.P2(R,Q2[0],Q2[1]),TEAL);sc('chd',fm('Focal chord through F₁ = (c,0): the line P–F₁ meets the curve again at P′')+rw('Focal chord through P, F₁',lt(fl))+rw('Other end P′',uv(R,Q2[0],Q2[1]))+rw('Length',dec(Math.hypot(P.u-Q2[0],P.v-Q2[1]))))}else sc('chd',rw('Focal chord','line P–F₁ is parallel to an asymptote: no second point'))}
+if(isFinite(u1+v1)){const cen=Math.hypot(u1,v1)<1e-9;
+if(cen){sc('pp',rw('Polar of Q','Q is the centre: its polar is the line at infinity (undefined)'))}else{const al=u1/a2,be=-v1/b2,pl=HM.L(R,al,be,1),cs=HM.contacts(R,u1,v1),pol=HM.pole(R,al,be,1);add('pol','Polar',pl,PUR);add('tq','Chord of contact',pl,PUR,1);ap('pol','Q',{x:Qx,y:Qy},PUR);ap('tq','Q',{x:Qx,y:Qy},PUR);ap('nq','Q',{x:Qx,y:Qy},PUR);ap('mid','Q',{x:Qx,y:Qy},PUR);
+sc('pp',fm('Polar of (x₁,y₁): xx₁/a² − yy₁/b² = 1 (= T = 0). Pole of αx+βy=γ (γ≠0): (αa²/γ, −βb²/γ). Line through the centre has no pole (at infinity).')+rw('Polar of Q',lt(pl))+rw('Position of Q',S1>1+1e-9?'inside (S₁ > 1): polar meets no real tangent':Math.abs(S1-1)<1e-9?'on the curve: polar = tangent':'outside (S₁ < 1)')+rw('Reciprocal check: pole of that polar',pol&&Math.hypot(pol[0]-u1,pol[1]-v1)<1e-8*(1+Math.abs(u1)+Math.abs(v1))?'✓ returns Q':'✗ mismatch'));
+sc('tq',fm('Pair of tangents: SS₁ = T², i.e. (u²/a² − v²/b² − 1)(S₁ − 1) = (uu₁/a² − vv₁/b² − 1)². Contact points = polar ∩ hyperbola.')+rw('S₁ = u₁²/a² − v₁²/b²',dec(S1)));
+if(!cs.length)sc('tq',rw('Tangents from Q','none real: Q is inside (or its polar misses the curve)'));else cs.forEach((z,i)=>{const tl=HM.tan(R,z[0],z[1]);add('tq','Tangent '+(i+1),tl,RED);ap('tq','T'+(i+1),HM.P2(R,z[0],z[1]),RED);sc('tq',rw('Contact point T'+(i+1),uv(R,z[0],z[1]))+rw('Tangent '+(i+1),lt(tl)))});
+if(cs.length==1)sc('tq',rw('Note','one tangent only: Q is on the curve, or the polar is parallel to an asymptote (second tangent is the asymptote)'));
+if(!P)0;const nn=HM.normalsFrom(R,u1,v1);nn.forEach((z,i)=>{const nl=HM.nor(R,z[0],z[1]);add('nq','Normal '+(i+1),nl,PUR);ap('nq','N'+(i+1),HM.P2(R,z[0],z[1]),PUR)});
+sc('nor',fm('Normals through Q: a²u₁/u₀ + b²v₁/v₀ = a²+b² — a quartic in the foot; solved NUMERICALLY (sign-change scan + bisection). At most 4.')+rw('Normals from Q (numerical)',nn.length+' real: '+nn.map(z=>uv(R,z[0],z[1])).join(', ')));
+if(S1>1+1e-9){const dl=[-be,al],ic=HM.isect(R,[u1,v1],dl);const ml=HM.L(R,al,be,S1);add('mid','Midpoint chord',ml,TEAL);sc('chd',fm('Chord with midpoint (x₁,y₁): T = S₁, i.e. xx₁/a² − yy₁/b² = x₁²/a² − y₁²/b²')+rw('Chord bisected at Q',lt(ml))+(ic.length==2?rw('Length',dec(Math.hypot(ic[0][0]-ic[1][0],ic[0][1]-ic[1][1]))):''))}
+else sc('chd',rw('Chord bisected at Q','no real chord: the midpoint must lie inside a branch (S₁ > 1)'))}}else sc('pp',rw('Q','enter valid numbers for Q'));
+if(isFinite(m)){const st_=HM.slopeTan(R,m);sc('tan',fm('Tangent of slope m: y = mx ± √(a²m² − b²); tangency condition c² = a²m² − b² (principal axes). Tangents parallel to a line = tangents of that slope.')+rw('Slope μ in principal axes',st_.mu===Infinity?'vertical (u = ±a)':dec(st_.mu)+'   ( a²μ²−b² = '+dec(st_.c2)+' )'));
+if(st_.none)sc('tan',rw('Tangents of slope m','none: a²μ² − b² < 0 (|μ| < b/a, slope shallower than the asymptotes)'));else if(st_.asym)sc('tan',rw('Tangents of slope m','a²μ² = b²: only the asymptote direction; touches at infinity'));else st_.lines.forEach((l,i)=>{add('sl','Slope tangent '+(i+1),l,RED);sc('tan',rw('Tangent '+(i+1)+' of slope m',lt(l))+rw('Contact point',uv(R,st_.pts[i][0],st_.pts[i][1])))});
+const dm=HM.diam(R,m);add('dia','Diameter',dm.dia,TEAL);add('dia','Conjugate diameter',dm.conj,RED,1);sc('dia',fm('Chords of slope μ have midpoints on the diameter v = (b²/(a²μ)) u. Conjugate diameters: μμ′ = b²/a². Each bisects chords parallel to the other.')+rw('Diameter bisecting chords of slope m',lt(dm.dia))+rw('Conjugate diameter (slope m)',lt(dm.conj))+rw('μ·μ′ = b²/a²',dm.mup===Infinity?'μ = 0: conjugate diameter is the conjugate axis':dec(dm.mu*dm.mup)+' = '+dec(b2/a2))+rw('Meets the hyperbola?',dm.meets?'diameter cuts the hyperbola; its conjugate does not':'diameter does not meet this hyperbola (|μ| < b/a) — it meets the conjugate'))}
+sc('cj',fm('Conjugate: v²/b² − u²/a² = 1. Same asymptotes and centre; transverse ↔ conjugate axes swap; e′ = c/b; 1/e² + 1/e′² = 1.')+rw('Equation (principal)','(v)²/'+dec(b2)+' − (u)²/'+dec(a2)+' = 1'+(R.rot?'':'<br>original form: '+(Math.abs(R.t.y)<1e-9?`(x−${dec(R.h)})²/${dec(a2)} − (y−${dec(R.k)})²/${dec(b2)} = −1`:`(y−${dec(R.k)})²/${dec(a2)} − (x−${dec(R.h)})²/${dec(b2)} = −1`)))+rw('Centre',pp({x:R.h,y:R.k}))+rw('Vertices',[b,-b].map(z=>uv(R,0,z)).join(', '))+rw('Foci',[c,-c].map(z=>uv(R,0,z)).join(', '))+rw('e′ = c/b',dec(c/b))+rw('Asymptotes',R.L.a.map(lineEq).join('<br>')));
+const ck=HM.check(R);sc('ver',rw('Internal consistency',ck.length?'⚠ '+ck.join('; '):'✓ vertices, c²=a²+b², e=c/a, focal difference, directrix ratio, asymptotes all verified'));
+if(AD.der){const q=R.q;sc('der',[`Original: ${eqn(q)}`,`Δ = B²−4AC = ${dec(q.B*q.B-4*q.A*q.C)} > 0 → hyperbola`,`Centre: solve 2Ax+By+D=0, Bx+2Cy+E=0 → (h,k) = (${dec(R.h)}, ${dec(R.k)})`,R.rot?`Rotate by θ = ½·atan2(B, A−C) = ${dec(Math.atan2(R.t.y,R.t.x)*180/Math.PI)}° to remove xy`:'B = 0: complete the squares in x and y',`Translate: X = x−h, Y = y−k → λ₁u²+λ₂v² = K`,`a² = ${dec(a2)}, b² = ${dec(b2)}`,`c² = a²+b² = ${dec(c*c)} → c = ${dec(c)}`,`e = c/a = ${dec(R.e)}`,`Vertices: centre ± a·(axis) = ${R.V.map(pp).join(', ')}`,`Foci: centre ± c·(axis) = ${R.Fo.map(pp).join(', ')}`,`Asymptotes: v = ±(b/a)u → ${R.L.a.map(lineEq).join(' ; ')}`].map((t,i)=>rw('Step '+(i+1),t)).join(''))}
+o.innerHTML=[['par','Parametric form'],['tan','Tangents'],['nor','Normals'],['chd','Chords'],['pp','Pole & polar / pair of tangents'],['tq','Pair of tangents'],['dia','Diameters'],['cj','Conjugate hyperbola'],['sp','Special properties, focal & reflection'],['ver','Verification'],['der','Derivation']].filter(x=>S[x[0]]).map(x=>dt(x[1],S[x[0]])).join('');
+st.adv=G;cv.setAttribute('role','img');cv.setAttribute('aria-label','Graph of the hyperbola centred at ('+dec(R.h)+', '+dec(R.k)+'), a = '+dec(R.a)+', b = '+dec(R.b)+', e = '+dec(R.e));applyQ();draw()}
+function applyQ(){const q=$('#q').value.trim().toLowerCase(),sy={focus:'foci',focal:'foci',directrix:'directri',vertex:'vertic',asymptote:'asymptot',normal:'normal',polar:'polar',pole:'pole',conjugate:'conjugate',chord:'chord',diameter:'diameter'},k=sy[q]||q;
+document.querySelectorAll('#res details,#advo details').forEach(d=>{const m=!q||d.textContent.toLowerCase().includes(k);d.style.display=m?'':'none';if(q&&m)d.open=true})}
+function advDraw(){const G=st.adv;if(!G)return;const R=st.R,{W,H,V}=st;
+if(G.cj){ctx.strokeStyle=col('--c1');ctx.lineWidth=2;ctx.setLineDash([10,6]);const big=Math.hypot(W,H)/V.s+Math.hypot(V.x-R.h,V.y-R.k),Sm=Math.asinh(2*big/Math.min(R.a,R.b))+1;
+for(const e of[1,-1]){ctx.beginPath();for(let i=0;i<=500;i++){const s=-Sm+2*Sm*i/500,p=HM.P2(R,R.a*Math.sinh(s),e*R.b*Math.cosh(s));i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y))}ctx.stroke()}ctx.setLineDash([])}
+for(const g of G.lines){const l=g.l,d=l.A*l.A+l.B*l.B;if(d<1e-24)continue;line({x:l.A*l.C/d,y:l.B*l.C/d},{x:-l.B,y:l.A},g.col,2.5,g.d?[7,6]:null)}
+for(const s of G.segs){ctx.strokeStyle=s[2];ctx.lineWidth=2.5;ctx.setLineDash(s[3]?[8,6]:[]);ctx.beginPath();ctx.moveTo(X(s[0].x),Y(s[0].y));ctx.lineTo(X(s[1].x),Y(s[1].y));ctx.stroke();ctx.setLineDash([])}
+for(const o of G.pts){ctx.fillStyle=o.col;ctx.beginPath();ctx.arc(X(o.p.x),Y(o.p.y),7,0,7);ctx.fill();ctx.fillStyle=col('--fg');ctx.font='bold 14px system-ui';if(st.vis.l)ctx.fillText(o.n,X(o.p.x)+9,Y(o.p.y)-9)}}
 advRender();
-
-// Teaching examples
+/* ===== Prompt 3 layer ===== */
 const EXL=[['Horizontal','x²/16 - y²/9 = 1','Opens left/right. a²=16, b²=9 → c=5, e=5/4. Try Foci + Directrices.'],['Vertical','y²/25 - x²/9 = 1','Transverse axis is vertical; the y² term is the positive one.'],['Translated','(x-2)²/9 - (y+1)²/4 = 1','Centre (2, −1): every object shifts with (h, k).'],['Fractions','x²/(1/4) - y²/(9/16) = 1','a² = 1/4, b² = 9/16: exact values stay exact.'],['General','4x² - 9y² - 16x + 18y - 29 = 0','Complete the squares: (x−2)²/9 − (y−1)²/4 = 1. Turn on "Show derivation".'],['Rotated','x² + 3xy + y² = 5','B ≠ 0: axes are rotated 45°. Read the angle in Overview.'],['Rectangular','x² - y² = 9','a = b: e = √2 and the asymptotes are perpendicular.'],['xy = c²','xy = 4','Rectangular hyperbola with the coordinate axes as asymptotes.'],['Tangent','x²/16 - y²/9 = 1','Advanced tools: turn on "Tangent at P" and "Slope tangents"; change θ.'],['Polar','x²/9 - y²/4 = 1','Turn on "Polar of Q" and "Tangents from Q": the polar is the chord of contact.'],['Conjugate','x²/9 - y²/16 = 1','Turn on "Conjugate": same asymptotes, axes swapped, e′ = c/b.']];
 $('#ex').innerHTML='';EXL.forEach(([n,e,t])=>mk($('#ex'),n,()=>{set(e);$('#msg').className='ok';$('#msg').textContent=t}));
-
 const FS=[['Standard form','(x−h)²/a² − (y−k)²/b² = 1 (horizontal); (y−k)²/a² − (x−h)²/b² = 1 (vertical)'],['Parameters','c² = a² + b²; e = c/a > 1; b² = a²(e² − 1)'],['Foci / vertices','Foci: centre ± c along the transverse axis; vertices: centre ± a; |PF₁ − PF₂| = 2a'],['Directrices','u = ±a/e = ±a²/c (perpendicular to transverse axis); PF/PM = e'],['Asymptotes','y − k = ±(b/a)(x − h) horizontal; y − k = ±(a/b)(x − h) vertical'],['Latus rectum','Length 2b²/a; endpoints (±c, ±b²/a) in principal axes'],['Parametric','(a secθ, b tanθ); ((a/2)(t+1/t), (b/2)(t−1/t)); focal radii e·u ∓ a'],['Tangents','xx₁/a² − yy₁/b² = 1; y = mx ± √(a²m² − b²); (x/a)secθ − (y/b)tanθ = 1'],['Normals','a²x/x₁ + b²y/y₁ = a²+b²; ax cosθ + by cotθ = a²+b²; up to 4 from a point'],['Chords','T = S₁ (midpoint); chord of contact = polar; θ₁,θ₂: (x/a)cos((θ₁−θ₂)/2) − (y/b)sin((θ₁+θ₂)/2) = cos((θ₁+θ₂)/2)'],['Pole / polar','Polar of (x₁,y₁): xx₁/a² − yy₁/b² = 1; pair of tangents SS₁ = T²'],['Diameters','Midpoints of chords of slope μ lie on v = b²u/(a²μ); conjugate slopes: μμ′ = b²/a²'],['Conjugate hyperbola','y²/b² − x²/a² = 1; same asymptotes; e′ = c/b; 1/e² + 1/e′² = 1'],['Rectangular','a = b; e = √2; asymptotes ⟂; xy = c² with c² = a²/2; param (ct, c/t)'],['Reflection','Tangent at P bisects ∠F₁PF₂; a ray aimed at one focus reflects toward the other']];
 const fs=document.createElement('section');fs.className='card';fs.id='fs';fs.innerHTML='<h3 style="margin:0 0 8px">Formula sheet (use the search box to filter)</h3>'+FS.map(([t,f])=>`<details><summary>${t}</summary><div class="fm" style="font-style:normal;font-size:1rem;color:var(--fg)">${f}</div></details>`).join('');adv.after(fs);
-
 applyQ=function(){const q=$('#q').value.trim().toLowerCase(),sy={focus:'foci',focal:'foci',directrix:'directri',vertex:'vertic',asymptote:'asymptot'},k=sy[q]||q;document.querySelectorAll('#res details,#advo details,#fs details').forEach(d=>{const m=!q||d.textContent.toLowerCase().includes(k);d.style.display=m?'':'none';if(q&&m)d.open=true})};
-
-// History management
+// history
 const HK='hh2',hget=()=>{try{return JSON.parse(localStorage.getItem(HK)||'[]')}catch(e){return[]}},hput=h=>{try{localStorage.setItem(HK,JSON.stringify(h))}catch(e){}};
 saveHist=function(){if(!st.R||st.R.ty!='hyp')return;let h=hget();const old=h.find(x=>x.e==inp.value);h=h.filter(x=>x.e!=inp.value);h.unshift({e:inp.value,t:Date.now(),f:old?old.f:0,m:$('#mode').value,p:$('#prec').value});hput(h.sort((a,b)=>b.f-a.f).slice(0,30));renderHist()};
-renderHist=function(){const box=$('#hist');box.innerHTML='';const h=hget();h.forEach(x=>{const w=document.createElement('span');w.style.cssText='display:inline-flex;gap:2px;align-items:center';mk(w,x.e,()=>{$('#mode').value=x.m\vert{}\vert{}'both';$('#prec').value=x.p||'4';set(x.e)});w.firstChild.title=new Date(x.t).toLocaleString();
+renderHist=function(){const box=$('#hist');box.innerHTML='';const h=hget();h.forEach(x=>{const w=document.createElement('span');w.style.cssText='display:inline-flex;gap:2px;align-items:center';mk(w,x.e,()=>{$('#mode').value=x.m||'both';$('#prec').value=x.p||'4';set(x.e)});w.firstChild.title=new Date(x.t).toLocaleString();
 mk(w,x.f?'★':'☆',()=>{x.f=x.f?0:1;hput(h);renderHist()});w.lastChild.setAttribute('aria-label','Favorite');mk(w,'✕',()=>{hput(h.filter(y=>y!=x));renderHist()});w.lastChild.setAttribute('aria-label','Delete');box.appendChild(w)});
 if(h.length)mk(box,'Clear history',()=>{hput([]);renderHist()})};renderHist();
-
-// Random conic generator
+// random
 const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),fx=(z,w)=>z?`(${w}${z<0?'+':'-'}${Math.abs(z)})`:w;
 function gen(cat){const a=ri(1,6),b=ri(1,6),h=ri(-4,4),k=ri(-4,4);
 if(cat=='rotated'){const A=ri(1,4),C=ri(1,4),B=ri(1,6)+2*Math.ceil(Math.sqrt(A*C));return`${A}x² + ${B}xy + ${C}y² = ${ri(2,12)}`}
@@ -461,41 +321,32 @@ if(cat=='advanced'){const A=b*b,C=-a*a;return`${A}x² ${C<0?'−':'+'} ${Math.ab
 const V=Math.random()<.5,H=cat=='basic'?0:h,K=cat=='basic'?0:k;return V?`${fx(K,'y')}²/${a*a} - ${fx(H,'x')}²/${b*b} = 1`:`${fx(H,'x')}²/${a*a} - ${fx(K,'y')}²/${b*b} = 1`}
 const cs=document.createElement('select');cs.id='cat';cs.setAttribute('aria-label','Random category');[['basic','Basic'],['intermediate','Intermediate'],['advanced','Advanced (general form)'],['rotated','Rotated'],['tangent','Tangent-focused'],['focal','Focal-property-focused']].forEach(([v,n])=>cs.add(new Option(n,v)));$('#rnd').before(cs);
 $('#rnd').onclick=()=>{const cat=cs.value;for(let i=0;i<40;i++){const e=gen(cat);try{const R=analyze(parse(e));if(R.ty=='hyp'&&!HM.check(R).length){set(e);if(cat=='tangent'){AD.on.tan=1;AD.on.sl=1}if(cat=='focal'){AD.on.foc=1;AD.on.ref=1;st.vis.f=1}document.querySelectorAll('#advt button').forEach((b,j)=>b.setAttribute('aria-pressed',!!AD.on[ADL[j][0]]));advRender();return}}catch(x){}}};
-
-// Export functionality
+// exports
 const dl=(name,blob)=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)};
 const bar=document.createElement('div');bar.className='chips';bar.innerHTML='';$('#cpy').parentElement.after(bar);
 mk(bar,'Copy equation',async()=>{try{await navigator.clipboard.writeText(inp.value)}catch(e){inp.select();document.execCommand&&document.execCommand('copy')}});
 mk(bar,'PNG',()=>{draw0();const c=document.createElement('canvas');c.width=cv.width;c.height=cv.height;const x=c.getContext('2d');x.fillStyle=col('--card');x.fillRect(0,0,c.width,c.height);x.drawImage(cv,0,0);c.toBlob(b=>dl('hyperbola.png',b))});
-mk(bar,'SVG',()=>{
-  const R=st.R;if(!R||R.ty!='hyp')return;const{W,H,V}=st,f=n=>n.toFixed(2);
-  let s=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="sans-serif"><rect width="100%" height="100%" fill="#fff"/><line x1="0" x2="${W}" y1="${f(Y(0))}" y2="${f(Y(0))}" stroke="#999"/><line y1="0" y2="${H}" x1="${f(X(0))}" x2="${f(X(0))}" stroke="#999"/>`;
-  const ln=(p,u,c,d)=>{const L=Math.hypot(u.x,u.y),k=1e4/L;return`<line x1="${f(X(p.x-u.x*k))}" y1="${f(Y(p.y-u.y*k))}" x2="${f(X(p.x+u.x*k))}" y2="${f(Y(p.y+u.y*k))}" stroke="${c}" stroke-width="2"${d?' stroke-dasharray="8 6"':''}/>`};
-  if(st.vis.a)R.L.a.forEach(l=>s+=ln(l[0],l[1],'#e67700',1));if(st.vis.d)R.L.d.forEach(l=>s+=ln(l[0],l[1],'#0a8f5b',1));if(st.vis.ax)R.L.ax.forEach(l=>s+=ln(l[0],l[1],'#777',1));
-  if(st.adv)st.adv.lines.forEach(g=>{const d=g.l.A**2+g.l.B**2;if(d>1e-24)s+=ln({x:g.l.A*g.l.C/d,y:g.l.B*g.l.C/d},{x:-g.l.B,y:g.l.A},g.col,g.d)});
-  const big=Math.hypot(W,H)/V.s+Math.hypot(V.x-R.h,V.y-R.k),S=Math.asinh(2*big/Math.min(R.a,R.b))+1;for(const e of[1,-1]){let d='';for(let i=0;i<=500;i++){const q=-S+2*S*i/500,p=HM.P2(R,e*R.a*Math.cosh(q),R.b*Math.sinh(q));d+=(i?'L':'M')+f(X(p.x))+' '+f(Y(p.y))}s+=`<path d="${d}" fill="none" stroke="#1a56db" stroke-width="3"/>`}
-  for(const o of pts().concat(st.adv?st.adv.pts:[]))s+=`<circle cx="${f(X(o.p.x))}" cy="${f(Y(o.p.y))}" r="6" fill="${o.col}"/>`+(st.vis.l?`<text x="${f(X(o.p.x)+9)}" y="${f(Y(o.p.y)-9)}" font-size="14" font-weight="bold" fill="#111">${o.n}</text>`:'');
-  dl('hyperbola.svg',new Blob([s+'</svg>'],{type:'image/svg+xml'}));
-});
+mk(bar,'SVG',()=>{const R=st.R;if(!R||R.ty!='hyp')return;const{W,H,V}=st,f=n=>n.toFixed(2),cl=col('--fg');let s=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="sans-serif"><rect width="100%" height="100%" fill="#fff"/><line x1="0" x2="${W}" y1="${f(Y(0))}" y2="${f(Y(0))}" stroke="#999"/><line y1="0" y2="${H}" x1="${f(X(0))}" x2="${f(X(0))}" stroke="#999"/>`;
+const ln=(p,u,c,d)=>{const L=Math.hypot(u.x,u.y),k=1e4/L;return`<line x1="${f(X(p.x-u.x*k))}" y1="${f(Y(p.y-u.y*k))}" x2="${f(X(p.x+u.x*k))}" y2="${f(Y(p.y+u.y*k))}" stroke="${c}" stroke-width="2"${d?' stroke-dasharray="8 6"':''}/>`};
+if(st.vis.a)R.L.a.forEach(l=>s+=ln(l[0],l[1],'#e67700',1));if(st.vis.d)R.L.d.forEach(l=>s+=ln(l[0],l[1],'#0a8f5b',1));if(st.vis.ax)R.L.ax.forEach(l=>s+=ln(l[0],l[1],'#777',1));
+if(st.adv)st.adv.lines.forEach(g=>{const d=g.l.A**2+g.l.B**2;if(d>1e-24)s+=ln({x:g.l.A*g.l.C/d,y:g.l.B*g.l.C/d},{x:-g.l.B,y:g.l.A},g.col,g.d)});
+const big=Math.hypot(W,H)/V.s+Math.hypot(V.x-R.h,V.y-R.k),S=Math.asinh(2*big/Math.min(R.a,R.b))+1;for(const e of[1,-1]){let d='';for(let i=0;i<=500;i++){const q=-S+2*S*i/500,p=HM.P2(R,e*R.a*Math.cosh(q),R.b*Math.sinh(q));d+=(i?'L':'M')+f(X(p.x))+' '+f(Y(p.y))}s+=`<path d="${d}" fill="none" stroke="#1a56db" stroke-width="3"/>`}
+for(const o of pts().concat(st.adv?st.adv.pts:[]))s+=`<circle cx="${f(X(o.p.x))}" cy="${f(Y(o.p.y))}" r="6" fill="${o.col}"/>`+(st.vis.l?`<text x="${f(X(o.p.x)+9)}" y="${f(Y(o.p.y)-9)}" font-size="14" font-weight="bold" fill="#111">${o.n}</text>`:'');
+dl('hyperbola.svg',new Blob([s+'</svg>'],{type:'image/svg+xml'}))});
 mk(bar,'Print / PDF',()=>{document.querySelectorAll('details').forEach(d=>d.open=true);draw0();window.print()});
-
-// View controls
+// graph controls + view
 [['⌂','Reset view',()=>{st.V={x:0,y:0,s:40};draw()}],['◎','Centre on hyperbola centre',()=>{if(st.R&&st.R.ty=='hyp'){st.V.x=st.R.h;st.V.y=st.R.k;draw()}}]].forEach(([t,l,f])=>{const b=document.createElement('button');b.textContent=t;b.setAttribute('aria-label',l);b.title=l;b.onclick=f;$('.tb').appendChild(b)});
 [['g','Grid'],['l','Labels']].forEach(([k,n])=>{st.vis[k]=1;const b=document.createElement('button');b.textContent=n;b.setAttribute('aria-pressed',true);b.onclick=()=>{st.vis[k]=st.vis[k]?0:1;b.setAttribute('aria-pressed',!!st.vis[k]);draw()};$('#vis').appendChild(b)});
-
-// Debounce input updates
+// debounce typing
 let tm=0;const ni=inp;
 ni.addEventListener('input',()=>{clearTimeout(tm);tm=setTimeout(()=>{if(update()){fit();draw()}},140)});ni.addEventListener('change',saveHist);
-
-// Presentation theme toggle
+// presentation mode: dark, restorable
 let prevTheme='system';const enter=on=>{const s=$('#theme');if(on){prevTheme=s.value;s.value='dark'}else s.value=prevTheme;s.onchange({target:s})};
 $('#pres').onclick=()=>{const on=document.body.classList.toggle('pres');$('#pres').textContent=on?'✕ Exit':'⛶ Present';enter(on);
 if(on){try{const p=document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();p&&p.catch&&p.catch(()=>{$('#msg').textContent='Fullscreen was blocked by the browser; presentation layout is still active (try F11).'})}catch(e){}}else try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}setTimeout(()=>{fit();draw()},200)};
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&!document.body.classList.contains('pres')&&$('#pres').textContent.includes('Exit')){$('#pres').textContent='⛶ Present';enter(false)}});
 $('#msg').setAttribute('aria-live','polite');ni.setAttribute('aria-describedby','msg');
 
-// Additional teaching presets
+// extra teaching examples
 [['Fractions','(x-1)²/(9/4) - (y+2)²/(25/4) = 1'],['Rotated','5x² + 8xy - 3y² = 20'],['Rect. (a=b)','x² - y² = 16'],['Tangent demo','x²/9 - y²/4 = 1'],['Polar demo','x²/16 - y²/25 = 1'],['Conjugate demo','x²/25 - y²/16 = 1']].forEach(([n,e])=>{const b=document.createElement('button');b.textContent=n;b.title=e;b.onclick=()=>set(e);$('#ex').appendChild(b)});
-</script>
-</body>
-</html>
+</script></body></html>

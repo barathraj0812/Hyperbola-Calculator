@@ -13,7 +13,7 @@ header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px max(1
 h1{font-size:1rem;letter-spacing:.08em;text-transform:uppercase;margin:0 auto 0 0;display:flex;align-items:center;gap:10px}h1::before{content:'H';display:grid;place-items:center;width:29px;height:29px;border-radius:7px;background:var(--fg);color:var(--card);font-family:Georgia,serif;font-size:1.1rem;letter-spacing:0}
 button,select{min-height:42px;padding:0 12px;font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--bd);border-radius:6px;cursor:pointer;transition:background-color .14s ease,border-color .14s ease,transform .12s ease,box-shadow .14s ease}button:hover,select:hover{border-color:color-mix(in srgb,var(--ac) 65%,var(--bd));background:var(--soft)}button:active{transform:translateY(1px);box-shadow:none}
 button[aria-pressed=true],button.pri{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 5px 12px color-mix(in srgb,var(--ac) 22%,transparent)}
-main{display:grid;grid-template-columns:minmax(280px,340px) minmax(0,1fr);gap:14px;padding:18px;max-width:1680px;margin:auto}
+main{display:grid;grid-template-columns:minmax(280px,340px) minmax(0,1fr);gap:14px;padding:18px;max-width:1680px;margin:auto}.site-footer{max-width:1680px;margin:0 auto;padding:8px 18px 20px;color:var(--mut);font-size:.78rem;text-align:center;border-top:1px solid color-mix(in srgb,var(--bd) 65%,transparent)}
 @media(max-width:800px){main{grid-template-columns:1fr}}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:7px;padding:14px;box-shadow:var(--shadow);transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease}.card:focus-within{border-color:color-mix(in srgb,var(--ac) 55%,var(--bd))}.card:hover{box-shadow:var(--shadow-hover)}
 aside.card{align-self:start}.workspace-card{padding:10px;min-width:0}.equation-kicker,.graph-kicker{display:flex;align-items:center;justify-content:space-between;font-size:.72rem;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:0 0 8px}.graph-kicker{padding:2px 4px 10px;margin:0}.graph-status{font-weight:600;letter-spacing:0;text-transform:none;color:var(--c2)}
@@ -78,6 +78,7 @@ body.pres{background:#090d13}body.pres main{grid-template-columns:1fr;max-width:
   </section>
   <section class="card" id="res"></section>
 </main>
+<footer class="site-footer">© 2026 Barath M · All rights reserved · Chennai, Tamil Nadu, India <span aria-hidden="true">·</span> Built with HTML · CSS · JS · Deployed on Cloudflare Pages</footer>
 
 <script>
 const $=q=>document.querySelector(q),inp=$('#eq'),cv=$('#cv'),ctx=cv.getContext('2d');

@@ -5,37 +5,39 @@
 <title>Hyperbola Calculator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>
-:root{--bg:#f6f7f9;--card:#fff;--fg:#14171f;--mut:#5b6472;--ac:#1a56db;--bd:#d5d9e0;--c1:#d63384;--c2:#0a8f5b;--c3:#e67700;--grid:#e3e6eb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--card:#161b22;--fg:#f0f3f7;--mut:#a0a9b8;--ac:#6ea8ff;--bd:#30363d;--grid:#222932}}
-:root[data-theme="dark"]{--bg:#0d1117;--card:#161b22;--fg:#f0f3f7;--mut:#a0a9b8;--ac:#6ea8ff;--bd:#30363d;--grid:#222932}
-*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--fg);font:16px system-ui,Segoe UI,Arial,sans-serif}
-header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--bd)}
+:root{--bg:#f6f7f9;--card:#fff;--fg:#14171f;--mut:#5b6472;--ac:#1a56db;--bd:#d5d9e0;--c1:#d63384;--c2:#0a8f5b;--c3:#e67700;--grid:#e3e6eb;--soft:#eef3ff;--shadow:0 8px 24px rgba(20,23,31,.06);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--card:#161b22;--fg:#f0f3f7;--mut:#a0a9b8;--ac:#6ea8ff;--bd:#30363d;--grid:#222932;--soft:#17243a;--shadow:0 12px 28px rgba(0,0,0,.2)}}
+:root[data-theme="dark"]{--bg:#0d1117;--card:#161b22;--fg:#f0f3f7;--mut:#a0a9b8;--ac:#6ea8ff;--bd:#30363d;--grid:#222932;--soft:#17243a;--shadow:0 12px 28px rgba(0,0,0,.2)}
+*{box-sizing:border-box}html,body{margin:0}html{scroll-behavior:smooth}body{background:var(--bg);color:var(--fg);font:16px system-ui,Segoe UI,Arial,sans-serif;transition:background-color .18s ease,color .18s ease}
+header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;background:color-mix(in srgb,var(--card) 94%,transparent);border-bottom:1px solid var(--bd);backdrop-filter:blur(12px)}
 h1{font-size:1.2rem;margin:0 auto 0 0}
-button,select{min-height:48px;padding:0 14px;font:inherit;color:var(--fg);background:var(--card);border:1.5px solid var(--bd);border-radius:10px;cursor:pointer}
+button,select{min-height:48px;padding:0 14px;font:inherit;color:var(--fg);background:var(--card);border:1.5px solid var(--bd);border-radius:8px;cursor:pointer;transition:background-color .14s ease,border-color .14s ease,transform .12s ease,box-shadow .14s ease}button:hover,select:hover{border-color:var(--ac);background:var(--soft)}button:active{transform:translateY(1px);box-shadow:none}
 button[aria-pressed=true],button.pri{background:var(--ac);color:#fff;border-color:var(--ac)}
-main{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:12px;padding:12px}
+main{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:12px;padding:12px;max-width:1680px;margin:auto}
 @media(max-width:800px){main{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}
-#eq{width:100%;min-height:60px;font-size:1.4rem;padding:8px 12px;border:2px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--fg)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:12px;box-shadow:var(--shadow);transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease}.card:focus-within{border-color:color-mix(in srgb,var(--ac) 55%,var(--bd))}
+#eq{width:100%;min-height:60px;font-size:1.4rem;padding:8px 12px;border:2px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--fg);transition:border-color .15s ease,box-shadow .15s ease}#eq:focus{border-color:var(--ac);box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 18%,transparent)}
 #eq.bad{border-color:#d92d20}#msg{min-height:3em;margin:8px 0;font-size:.95rem}.err{color:#d92d20}.ok{color:var(--c2)}
 .keys,.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.keys button{min-width:52px;font-size:1.2rem}
 .chips button{font-size:.9rem;min-height:44px}
-#gw{position:relative;height:min(70vh,640px);min-height:340px}canvas{width:100%;height:100%;display:block;border-radius:10px;touch-action:none;background:var(--card)}
+#gw{position:relative;height:min(70vh,680px);min-height:360px;isolation:isolate}canvas{width:100%;height:100%;display:block;border-radius:6px;touch-action:none;background:var(--card);cursor:grab}canvas:active{cursor:grabbing}
 .tb{position:absolute;right:8px;top:8px;display:flex;gap:6px;flex-direction:column}.tb button{min-width:52px;font-size:1.3rem}
 #sel{margin-top:8px;min-height:3.2em;font-size:1rem;white-space:pre-wrap}
-#res{grid-column:1/-1}details{border:1px solid var(--bd);border-radius:10px;margin-bottom:8px;padding:0 12px}
-summary{min-height:48px;display:flex;align-items:center;font-weight:600;cursor:pointer}
+#res{grid-column:1/-1}details{border:1px solid var(--bd);border-radius:8px;margin-bottom:8px;padding:0 12px;background:color-mix(in srgb,var(--card) 96%,var(--soft));transition:border-color .16s ease,background-color .16s ease}details[open]{border-color:color-mix(in srgb,var(--ac) 32%,var(--bd))}
+summary{min-height:48px;display:flex;align-items:center;font-weight:600;cursor:pointer;list-style:none}summary::-webkit-details-marker{display:none}summary::after{content:'+';margin-left:auto;color:var(--mut);font-size:1.25rem;transition:transform .16s ease,color .16s ease}details[open]>summary::after{transform:rotate(45deg);color:var(--ac)}
 .r{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid var(--grid);flex-wrap:wrap}.r b{color:var(--mut);font-weight:500}.r span{font-family:Georgia,serif;text-align:right}
 body.pres{font-size:20px}body.pres button,body.pres select{min-height:60px;font-size:1.2rem}body.pres main{grid-template-columns:minmax(340px,440px) 1fr}
 body.pres #res,body.pres .hist{display:none}body.pres #gw{height:78vh}
 @page{size:A4 landscape;margin:12mm}
-@media print{header,main>aside,#sel,.keys,.chips,.tb,#adv>h3,#adv>.ins,#adv>#advt,#adv>label,#fs{display:none!important}body{background:#fff;color:#000;font-size:10pt}main{display:block;padding:0}.card{border:0;padding:0;background:#fff;break-inside:avoid}#res{display:block}#res details,#adv details{border:0;border-radius:0;margin:0 0 8px;padding:0;break-inside:avoid}#res summary,#adv summary{min-height:0;padding:4px 0;color:#000}#res .r,#adv .r{padding:3px 0;border-color:#ccc}#gw{height:120mm;break-inside:avoid;margin:8px 0}canvas{border:1px solid #999}.cp{display:none!important}}
+@media print{header,main>aside,#sel,.keys,.chips,.tb,#adv>h3,#adv>.ins,#adv>#advt,#adv>label,#lab>h3,#lab .ins,#lab button,#lab input,#fs{display:none!important}body{background:#fff;color:#000;font-size:10pt}main{display:block;padding:0}.card{border:0;padding:0;background:#fff;break-inside:avoid}#res{display:block}#res details,#adv details,#lab details{border:0;border-radius:0;margin:0 0 8px;padding:0;break-inside:avoid}#res summary,#adv summary,#lab summary{min-height:0;padding:4px 0;color:#000}#res .r,#adv .r,#lab .r{padding:3px 0;border-color:#ccc}#gw{height:120mm;break-inside:avoid;margin:8px 0}canvas{border:1px solid #999}.cp{display:none!important}}
 .ins{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}.ins input{width:96px;min-height:44px;font:inherit;padding:0 8px;border:1.5px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--fg)}#q{min-height:48px;padding:0 12px;font:inherit;border:1.5px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--fg);width:200px}.fm{font-size:.85rem;color:var(--mut);font-style:italic;padding:6px 0}.cp{min-height:36px!important;min-width:36px;padding:0!important}.cp::before{content:'⧉'}.r span{flex:1}#adv{grid-column:1/-1}
+.labgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.labgrid .ins{margin:0}.labgrid input[type=range]{width:100%;min-height:28px;padding:0}.labout{margin-top:8px}.labout .r{font-size:.95rem}.hint{color:var(--mut);font-size:.9rem;margin:6px 0}.swatch{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:5px}
 button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 @media(prefers-contrast:more){:root{--bd:#000;--mut:#000}}body{overflow-x:hidden}header{position:sticky;top:0;z-index:5}#q{max-width:100%}
-body.pres main{grid-template-columns:1fr}body.pres .keys,body.pres #ex,body.pres #adv,body.pres #fs,body.pres .chips:not(#vis){display:none}body.pres #vis{display:flex}body.pres #eq{font-size:2rem;min-height:80px}body.pres #gw{height:74vh}body.pres canvas{font-size:20px}
+body.pres{background:#090d13}body.pres main{grid-template-columns:1fr;max-width:none;padding:8px}body.pres .keys,body.pres #ex,body.pres #adv,body.pres #fs,body.pres #lab,body.pres .chips:not(#vis){display:none}body.pres #vis{display:flex}body.pres #eq{font-size:2rem;min-height:80px}body.pres #gw{height:78vh;min-height:520px}body.pres canvas{font-size:20px}
 @media print{#gw .tb,#vis,#q{display:none!important}}
+@media(max-width:560px){header{padding:8px;gap:6px}header h1{width:100%;font-size:1.1rem}header select{flex:1;min-width:0}#q{width:100%}main{padding:8px;gap:8px}.card{padding:10px}#gw{height:58vh;min-height:330px}.tb{right:5px;top:5px}.tb button{min-width:46px;padding:0 10px}.r{align-items:flex-start}.r span{text-align:left;min-width:100%}.chips button{flex:1 1 auto}.labgrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -77,7 +79,7 @@ const $=q=>document.querySelector(q),inp=$('#eq'),cv=$('#cv'),ctx=cv.getContext(
 const EX=['x²/16 - y²/9 = 1','y²/25 - x²/9 = 1','(x-2)²/9 - (y+1)²/4 = 1','4x² - 9y² - 16x + 18y - 29 = 0','xy = 4','x² - y² = 9','x²/4 + y²/9 = 1'];
 const KEYS=['x','y','²','^','√(','π','+','−','×','÷','/','(',')','=','⌫'];
 const VIS=[['c','Center'],['v','Vertices'],['cv','Co-vertices'],['f','Foci'],['a','Asymptotes'],['d','Directrices'],['ta','Transverse axis'],['ca','Conjugate axis'],['lr','Latus rectum'],['axis','Coordinate axes'],['g','Grid'],['l','Labels']];
-const st={vis:{c:1,v:1,cv:0,f:1,a:1,d:0,ta:0,ca:0,lr:0,axis:1,g:1,l:1},R:null,V:{x:0,y:0,s:40},sel:null,W:0,H:0};
+const st={vis:{c:1,v:1,cv:0,f:1,a:1,d:0,ta:0,ca:0,lr:0,axis:1,g:1,l:1},R:null,V:{x:0,y:0,s:40},sel:null,W:0,H:0,morph:null,lastPointer:null};
 const eps=1e-9;
 
 // ---------- parser ----------
@@ -157,6 +159,15 @@ function analyze(c0){
   V:vertices,CV:coVertices,Fo:foci,L:{ax:[geometry.axes.transverse,geometry.axes.conjugate],a:geometry.asymptotes,d:geometry.directrices},q:c0};
 }
 
+function renderModel(){
+  const m=st.morph;if(!m)return st.R;
+  const reduce=matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches,elapsed=Date.now()-m.start,p=reduce?1:Math.min(1,elapsed/m.duration),ease=1-(1-p)**3;
+  if(p>=1){st.morph=null;return st.R}
+  const a=m.from.a+(m.to.a-m.from.a)*ease,b=m.from.b+(m.to.b-m.from.b)*ease,h=m.from.h+(m.to.h-m.from.h)*ease,k=m.from.k+(m.to.k-m.from.k)*ease,horiz=Math.abs(m.to.t.y)<1e-8;
+  const term=(v,n)=>Math.abs(v)<1e-12?n:`(${n}${v<0?'+':'-'}${Math.abs(v)})`;
+  return analyze(parse(horiz?`${term(h,'x')}^2/${a*a}-${term(k,'y')}^2/${b*b}=1`:`${term(k,'y')}^2/${a*a}-${term(h,'x')}^2/${b*b}=1`));
+}
+
 // ---------- formatting ----------
 const rat=v=>{for(let q=1;q<=400;q++){const p=Math.round(v*q);if(Math.abs(v-p/q)<1e-9)return[p,q]}return null};
 const sq=v=>{
@@ -207,7 +218,7 @@ function draw0(){
   ctx.font='12px system-ui';ctx.fillStyle=col('--mut');ctx.lineWidth=1;
   for(let x=Math.ceil((V.x-W/2/V.s)/step)*step;x<=V.x+W/2/V.s;x+=step){const zero=Math.abs(x)<1e-9;if((zero&&!st.vis.axis)||(!zero&&!st.vis.g))continue;ctx.strokeStyle=col(zero?'--mut':'--grid');ctx.beginPath();ctx.moveTo(X(x),0);ctx.lineTo(X(x),H);ctx.stroke();if(!zero&&st.vis.l)ctx.fillText(+x.toFixed(6),X(x)+3,Math.min(H-4,Math.max(12,Y(0)+14)))}
   for(let y=Math.ceil((V.y-H/2/V.s)/step)*step;y<=V.y+H/2/V.s;y+=step){const zero=Math.abs(y)<1e-9;if((zero&&!st.vis.axis)||(!zero&&!st.vis.g))continue;ctx.strokeStyle=col(zero?'--mut':'--grid');ctx.beginPath();ctx.moveTo(0,Y(y));ctx.lineTo(W,Y(y));ctx.stroke();if(!zero&&st.vis.l)ctx.fillText(+y.toFixed(6),Math.min(W-30,Math.max(4,X(0)+4)),Y(y)-3)}
-  const R=st.R;if(!R||R.ty!='hyp')return;const v=st.vis;
+  const R=renderModel();st.renderR=R;if(!R||R.ty!='hyp')return;const v=st.vis;
   if(v.ta)line(R.geometry.axes.transverse[0],R.geometry.axes.transverse[1],col('--mut'),1.5,[6,5]);
   if(v.ca)line(R.geometry.axes.conjugate[0],R.geometry.axes.conjugate[1],col('--mut'),1.5,[6,5]);
   if(v.a)R.geometry.asymptotes.forEach(l=>line(l[0],l[1],col('--c3'),1.8,[8,6]));
@@ -217,10 +228,10 @@ function draw0(){
   ctx.strokeStyle=col('--ac');ctx.lineWidth=3;
   for(const e of[1,-1]){ctx.beginPath();for(let i=0;i<=500;i++){const s=-S+2*S*i/500,u=e*R.a*Math.cosh(s),w=R.b*Math.sinh(s),x=R.h+u*R.t.x+w*R.n.x,y=R.k+u*R.t.y+w*R.n.y;i?ctx.lineTo(X(x),Y(y)):ctx.moveTo(X(x),Y(y))}ctx.stroke()}
   for(const o of pts()){ctx.fillStyle=o.col;ctx.beginPath();ctx.arc(X(o.p.x),Y(o.p.y),o===st.sel?9:6,0,7);ctx.fill();if(o===st.sel){ctx.strokeStyle=col('--fg');ctx.lineWidth=2;ctx.stroke()}
-  ctx.fillStyle=col('--fg');ctx.font='bold 14px system-ui';if(st.vis.l)ctx.fillText(o.n,X(o.p.x)+9,Y(o.p.y)-9)}if(window.advDraw)advDraw();
+  ctx.fillStyle=col('--fg');ctx.font='bold 14px system-ui';if(st.vis.l&&st.V.s>14)ctx.fillText(o.n,X(o.p.x)+9,Y(o.p.y)-9)}if(window.advDraw)advDraw();if(window.labDraw)labDraw();if(st.morph)draw();
 }
 function pts(){
-  const R=st.R,v=st.vis,o=[];if(!R||R.ty!='hyp')return o;
+  const R=st.renderR||st.R,v=st.vis,o=[];if(!R||R.ty!='hyp')return o;
   if(v.c)o.push({n:'C',k:'Center',p:R.geometry.center,col:'#888'});
   if(v.v)o.push({n:'V₁',k:'Vertex',p:R.geometry.vertices[0],col:col('--c1')},{n:'V₂',k:'Vertex',p:R.geometry.vertices[1],col:col('--c1')});
   if(v.cv)o.push({n:'CV₁',k:'Co-vertex',p:R.geometry.coVertices[0],col:col('--c3')},{n:'CV₂',k:'Co-vertex',p:R.geometry.coVertices[1],col:col('--c3')});
@@ -256,7 +267,9 @@ const zoom=f=>{st.V.s*=f;draw()};$('#zi').onclick=()=>zoom(1.3);$('#zo').onclick
 function update(){
   const msg=$('#msg');let ok=false;
   try{
-    const c=parse(inp.value),R=analyze(c);st.R=R;
+    const c=parse(inp.value),R=analyze(c),previous=st.R;st.R=R;
+    if(previous&&previous.ty==='hyp'&&R.ty==='hyp'&&!previous.rot&&!R.rot&&Math.abs(previous.t.y-R.t.y)<1e-8){st.morph={from:previous,to:R,start:Date.now(),duration:260}}
+    else st.morph=null;
     if(R.ty=='hyp'){msg.className='ok';msg.textContent='✓ Hyperbola recognised.';ok=true;inp.classList.remove('bad')}
     else{msg.className='err';msg.textContent=R.msg;inp.classList.add('bad')}
   }catch(e){st.R=null;msg.className='err';msg.textContent=typeof e=='string'?e:'Something went wrong reading that equation.';inp.classList.add('bad')}
@@ -320,6 +333,7 @@ const HM={
     const pf=Math.hypot(point.p.x-focus.x,point.p.y-focus.y),pd=Math.abs((point.p.x-base.x)*R.t.x+(point.p.y-base.y)*R.t.y);
     return{point:point.p,focus,foot,directrix,pf,pd,ratio:pf/pd,side};
   },
+  lineEquivalent(p,q){const a=[p.A,p.B,p.C],b=[q.A,q.B,q.C],i=a.findIndex(x=>Math.abs(x)>1e-10);return i>=0&&Math.abs(b[i])>1e-10&&a.every((x,j)=>Math.abs(x*b[i]-b[j]*a[i])<1e-8*(1+Math.abs(x*b[i])))},
   thOf(R,u,v){let t=Math.atan2(v/R.b*R.a/u,R.a/u);return t<0?t+2*Math.PI:t},
   tan(R,u,v){return HM.L(R,u/R.a2,-v/R.b2,1)},
   nor(R,u,v){return Math.abs(v)<1e-9?HM.L(R,0,1,0):HM.L(R,R.a2/u,R.b2/v,R.a2+R.b2)},
@@ -546,6 +560,59 @@ $('#msg').setAttribute('aria-live','polite');ni.setAttribute('aria-describedby',
 
 // Additional teaching presets
 [['Fractions','(x-1)²/(9/4) - (y+2)²/(25/4) = 1'],['Rotated','5x² + 8xy - 3y² = 20'],['Rect. (a=b)','x² - y² = 16'],['Tangent demo','x²/9 - y²/4 = 1'],['Polar demo','x²/16 - y²/25 = 1'],['Conjugate demo','x²/25 - y²/16 = 1']].forEach(([n,e])=>{const b=document.createElement('button');b.textContent=n;b.title=e;b.onclick=()=>set(e);$('#ex').appendChild(b)});
+</script>
+<script>
+/* Integrated exploration layer: all geometry delegates to analyze() and HM. */
+const LAB={restore:'',point:null,external:null,intersection:null,comparison:null,locus:[],paramEditing:false};
+const lab=document.createElement('section');lab.className='card';lab.id='lab';
+lab.innerHTML=`<h3 style="margin:0 0 8px">Hyperbola laboratory</h3>
+<details open><summary>Explore: parameters</summary><div class="labgrid"><div class="ins"><label>a <input id="la" type="number" min="0.000001" step="any"></label><label>b <input id="lb" type="number" min="0.000001" step="any"></label><label>h <input id="lh" type="number" step="any"></label><label>k <input id="lk" type="number" step="any"></label><label>Orientation <select id="lo"><option value="h">Horizontal</option><option value="v">Vertical</option></select></label></div><div><label>a range<input id="lar" type="range" min="0.1" max="20" step="0.1"></label><label>b range<input id="lbr" type="range" min="0.1" max="20" step="0.1"></label><div class="chips"><button id="lreset">Reset parameters</button><button id="lrestore">Restore previous</button></div></div></div><div class="hint" id="lparammsg"></div></details>
+<details><summary>Explore: point P</summary><div class="ins"><label>x₁ <input id="lpx" type="number" step="any"></label><label>y₁ <input id="lpy" type="number" step="any"></label><button id="lpoint">Analyze P</button><button id="lpointclear">Clear construction</button></div><div class="hint">After selecting an on-curve point, drag its red marker on the graph to move P along the hyperbola.</div><div class="labout" id="lpout"></div></details>
+<details><summary>Construct: tangents from Q</summary><div class="ins"><label>x₁ <input id="lqx" type="number" step="any"></label><label>y₁ <input id="lqy" type="number" step="any"></label><button id="lqgo">Construct tangents</button><button id="lqclear">Clear construction</button></div><div class="labout" id="lqout"></div></details>
+<details><summary>Construct: line intersections</summary><div class="ins"><label>Line <input id="lline" value="x = 0" aria-label="Line equation"></label><button id="llgo">Find intersections</button><button id="llclear">Clear intersections</button></div><div class="hint">Enter a linear equation such as <i>2x - y = 3</i>. Hyperbola intersections are solved in the shared principal-axis model.</div><div class="labout" id="llout"></div></details>
+<details><summary>Compare: second hyperbola</summary><div class="ins"><label>H₂ <input id="lcompare" value="(x-2)²/9 - (y+1)²/4 = 1" aria-label="Second hyperbola equation"></label><button id="lcgo">Compare</button><button id="lcclear">Hide H₂</button></div><div class="labout" id="lcout"></div></details>
+<details><summary>Explore: midpoint locus</summary><div class="ins"><label>Chord slope m <input id="lm" type="number" step="any" value="1"></label><label>Move midpoint <input id="lms" type="range" min="-20" max="20" step="0.1" value="0"></label><button id="ltrace">Record midpoint</button><button id="ltraceclear">Clear trace</button></div><div class="labout" id="lmout"></div></details>
+<details><summary>Verify an answer</summary><div class="ins"><label>Result <select id="lvtarget"><option value="e">Eccentricity e</option><option value="c">c</option><option value="tan">Tangent at θ</option><option value="nor">Normal at θ</option></select></label><label>Your answer <input id="lvanswer" aria-label="Answer to verify"></label><button id="lvgo">Verify</button></div><div class="hint">Equations accept scalar multiples and reordered linear terms. Numeric answers use a relative tolerance of 1e-8.</div><div class="labout" id="lvout" aria-live="polite"></div></details>`;
+fs.after(lab);
+
+const lrow=(k,v)=>`<div class="r"><b>${k}</b><span>${v}</span></div>`;
+const lpt=p=>`(${dec(p.x)}, ${dec(p.y)})`;
+const lline=l=>lt(l);
+function labEquation(a,b,h,k,o){const term=(v,n)=>Math.abs(v)<1e-12?n:`(${n}${v<0?' + ':' − '}${dec(Math.abs(v))})`;return o==='h'?`${term(h,'x')}²/${dec(a*a)} − ${term(k,'y')}²/${dec(b*b)} = 1`:`${term(k,'y')}²/${dec(a*a)} − ${term(h,'x')}²/${dec(b*b)} = 1`}
+function labModel(){return st.R&&st.R.ty==='hyp'?st.R:null}
+function syncLab(){const R=labModel();if(!R)return;const axis=!R.rot;if(axis){[['la',R.a],['lb',R.b],['lh',R.h],['lk',R.k],['lar',Math.min(20,R.a)],['lbr',Math.min(20,R.b)]].forEach(([id,v])=>{const el=$('#'+id);if(document.activeElement!==el)el.value=+v.toFixed(8)});$('#lo').value=Math.abs(R.t.y)<1e-8?'h':'v';$('#lparammsg').textContent='Equation, graph, properties, and active constructions share this parameter model.'}else $('#lparammsg').textContent='This equation has rotated axes. Parameter editing is available through the equation input; all constructions remain active.';
+  if(!LAB.point){$('#lpx').value=+R.h.toFixed(6);$('#lpy').value=+R.k.toFixed(6)}
+}
+function applyLabParameters(){const R=labModel(),a=+$('#la').value,b=+$('#lb').value,h=+$('#lh').value,k=+$('#lk').value,o=$('#lo').value;if(!R||R.rot){$('#lparammsg').textContent='Use the equation input for rotated hyperbolas.';return}if(!(a>0&&b>0&&[h,k].every(isFinite))){$('#lparammsg').textContent='a and b must be positive; h and k must be finite.';return}if(!LAB.restore)LAB.restore=inp.value;set(labEquation(a,b,h,k,o));syncLab()}
+['la','lb','lh','lk','lo'].forEach(id=>$('#'+id).addEventListener('change',applyLabParameters));
+[['lar','la'],['lbr','lb']].forEach(([range,num])=>$('#'+range).oninput=()=>{$('#'+num).value=$('#'+range).value;applyLabParameters()});
+$('#lreset').onclick=()=>{const R=labModel();if(!R||R.rot)return;if(!LAB.restore)LAB.restore=inp.value;set(labEquation(4,3,0,0,'h'));syncLab()};
+$('#lrestore').onclick=()=>{if(LAB.restore){const e=LAB.restore;LAB.restore='';set(e);syncLab()}};
+function setLabPoint(){const R=labModel(),x=+$('#lpx').value,y=+$('#lpy').value,A=pointAnalysis(R,x,y);LAB.point=null;if(!A){$('#lpout').innerHTML='<div class="err">Enter finite coordinates after a valid hyperbola is available.</div>';draw();return}const G={points:[{n:'P',p:{x,y},col:'#e03131'}],lines:[],segs:[]};let html=lrow('P',lpt({x,y}))+lrow('Relationship',A.on?'On the hyperbola':'Not on the hyperbola')+lrow('Equation value',dec(A.value))+lrow('Residual from 1',dec(A.comparison)+' (tolerance ±'+A.tol.toExponential(1)+')')+lrow('Centre distance',dec(A.centreDistance))+lrow('PF₁ / PF₂',dec(A.distances[0])+' / '+dec(A.distances[1]))+lrow('|PF₁ − PF₂|',dec(A.focalDifference));
+  if(A.on){const[u,v]=HM.U(R,x,y),theta=HM.thOf(R,u,v),fd=HM.focusDirectrix(R,theta),tan=HM.tan(R,u,v),nor=HM.nor(R,u,v),slope=l=>Math.abs(l.B)<1e-10?'vertical':dec(-l.A/l.B);G.lines.push({l:tan,col:'#e03131'},{l:nor,col:'#8e44ad'},...R.geometry.directrices.map(d=>({l:{A:d[1].y,B:-d[1].x,C:d[1].y*d[0].x-d[1].x*d[0].y},col:'#0c8599',dash:1})));G.points.push({n:'F',p:fd.focus,col:'#0c8599'},{n:'D',p:fd.foot,col:'#8e44ad'});G.segs.push([fd.point,fd.focus,'#0c8599'],[fd.point,fd.foot,'#8e44ad',1]);html+=lrow('Tangent',lline(tan))+lrow('Tangent slope',slope(tan))+lrow('Normal',lline(nor))+lrow('Normal slope',slope(nor))+lrow('PD / PF',dec(fd.pd)+' / '+dec(fd.pf))+lrow('PF / PD',dec(fd.ratio)+' = e = '+dec(R.e));}
+  else html+=lrow('Tangent / normal','Not calculated: P is not on the hyperbola within tolerance.');LAB.point=G;$('#lpout').innerHTML=html;draw();
+}
+$('#lpoint').onclick=setLabPoint;$('#lpointclear').onclick=()=>{LAB.point=null;$('#lpout').innerHTML='';draw()};
+let labDragging=false;
+cv.addEventListener('pointerdown',e=>{if(!LAB.point||!LAB.point.points.length)return;const p=LAB.point.points[0].p;if(Math.hypot(X(p.x)-e.offsetX,Y(p.y)-e.offsetY)>16)return;labDragging=true;cv.setPointerCapture(e.pointerId);e.stopImmediatePropagation()},true);
+cv.addEventListener('pointermove',e=>{if(!labDragging)return;const R=labModel(),x=(e.offsetX-st.W/2)/st.V.s+st.V.x,y=-(e.offsetY-st.H/2)/st.V.s+st.V.y,[u,v]=HM.U(R,x,y);let theta=Math.atan2(v/R.b,R.a/(Math.abs(u)<1e-8?(u<0?-1e-8:1e-8):u));if(Math.abs(Math.cos(theta))>0.02){const p=HM.par(R,theta).p;$('#lpx').value=+p.x.toFixed(8);$('#lpy').value=+p.y.toFixed(8);setLabPoint()}e.stopImmediatePropagation()},true);
+['pointerup','pointercancel'].forEach(type=>cv.addEventListener(type,e=>{if(labDragging){labDragging=false;e.stopImmediatePropagation()}},true));
+function lineFromText(text){const q=parse(text);if(Math.abs(q.A)+Math.abs(q.B)+Math.abs(q.C)>1e-9||Math.abs(q.D)+Math.abs(q.E)<1e-12)throw'Enter one non-degenerate linear equation, for example 2x − y = 3.';return{A:q.D,B:q.E,C:-q.F}}
+function intersectLine(){const R=labModel();try{const l=lineFromText($('#lline').value),d=l.A*l.A+l.B*l.B,p={x:l.A*l.C/d,y:l.B*l.C/d},dir={x:-l.B,y:l.A},q=HM.U(R,p.x,p.y),uvd=[dir.x*R.t.x+dir.y*R.t.y,dir.x*R.n.x+dir.y*R.n.y],hit=HM.isect(R,q,uvd).map(z=>HM.P2(R,z[0],z[1]));LAB.intersection={line:l,points:hit};$('#llout').innerHTML=lrow('Line',lline(l))+lrow('Real intersections',hit.length?hit.map(lpt).join('<br>'):'None');draw()}catch(e){$('#llout').innerHTML='<div class="err">'+(typeof e==='string'?e:'The line could not be interpreted reliably.')+'</div>'}}
+$('#llgo').onclick=intersectLine;$('#llclear').onclick=()=>{LAB.intersection=null;$('#llout').innerHTML='';draw()};
+function externalTangents(){const R=labModel(),x=+$('#lqx').value,y=+$('#lqy').value;if(!R||![x,y].every(isFinite))return;const[u,v]=HM.U(R,x,y),contacts=HM.contacts(R,u,v)||[],lines=contacts.map(z=>HM.tan(R,z[0],z[1])),points=contacts.map(z=>HM.P2(R,z[0],z[1]));LAB.external={q:{x,y},lines,points,polar:Math.hypot(u,v)<1e-9?null:HM.L(R,u/R.a2,-v/R.b2,1)};let h=lrow('Q',lpt({x,y}))+lrow('State',contacts.length===2?'Two real tangents':contacts.length===1?'One limiting tangent':'No real tangents');if(contacts.length){h+=lrow('Contact points',points.map(lpt).join('<br>'))+lrow('Tangents',lines.map(lline).join('<br>'))+lrow('Chord of contact / polar',lline(LAB.external.polar));}$('#lqout').innerHTML=h;draw()}
+$('#lqgo').onclick=externalTangents;$('#lqclear').onclick=()=>{LAB.external=null;$('#lqout').innerHTML='';draw()};
+function compare(){try{const R=analyze(parse($('#lcompare').value));if(R.ty!=='hyp')throw R.msg;LAB.comparison=R;$('#lcout').innerHTML=lrow('H₂ orientation',R.ori)+lrow('Centre',lpt(R.geometry.center))+lrow('a / b / c',dec(R.a)+' / '+dec(R.b)+' / '+dec(R.c))+lrow('Eccentricity',dec(R.e))+lrow('Relative centres',dec(Math.hypot(R.h-st.R.h,R.k-st.R.k)))+lrow('Rendering','H₁ blue; H₂ magenta. Use the line-intersection tool for exact line intersections.');draw()}catch(e){$('#lcout').innerHTML='<div class="err">'+(typeof e==='string'?e:'H₂ could not be analyzed.')+'</div>'}}
+$('#lcgo').onclick=compare;$('#lcclear').onclick=()=>{LAB.comparison=null;$('#lcout').innerHTML='';draw()};
+function locus(){const R=labModel(),m=+$('#lm').value,s=+$('#lms').value;if(!R||!isFinite(m+s))return;const d=HM.diam(R,m).dia,norm=Math.hypot(d.A,d.B),p={x:R.h+s*(-d.B)/norm,y:R.k+s*d.A/norm},uv=HM.U(R,p.x,p.y),valid=HM.S(R,uv[0],uv[1])>1+1e-9;if(valid&&LAB.locus.length<400)LAB.locus.push(p);$('#lmout').innerHTML=lrow('Diameter locus',lline(d))+lrow('Current midpoint',valid?lpt(p):'No real chord at this midpoint')+lrow('Recorded points',LAB.locus.length);draw()}
+$('#ltrace').onclick=locus;$('#lms').oninput=locus;$('#ltraceclear').onclick=()=>{LAB.locus=[];$('#lmout').innerHTML='';draw()};
+function verify(){const R=labModel(),target=$('#lvtarget').value,answer=$('#lvanswer').value.trim();if(!R||!answer)return;try{if(target==='e'||target==='c'){const got=parse(`${answer}=0`).F,want=target==='e'?R.e:R.c,ok=Math.abs(got-want)<=1e-8*(1+Math.abs(want));$('#lvout').innerHTML=lrow('Result',ok?'Correct within numerical tolerance':'Incorrect')+lrow('Expected',dec(want))+lrow('Tolerance','relative 1e-8');return}const P=HM.par(R,+$('#th').value);if(!P)throw'θ does not define a finite point.';const expected=target==='tan'?HM.tan(R,P.u,P.v):HM.nor(R,P.u,P.v),q=parse(answer);if(Math.abs(q.A)+Math.abs(q.B)+Math.abs(q.C)>1e-9)throw'Enter a linear equation.';const given={A:q.D,B:q.E,C:-q.F};$('#lvout').innerHTML=lrow('Result',HM.lineEquivalent(expected,given)?'Mathematically equivalent':'Incorrect')+lrow('Expected',lline(expected));}catch(e){$('#lvout').innerHTML='<div class="err">Cannot verify reliably: '+(typeof e==='string'?e:'use a numeric value or linear equation.')+'</div>'}}
+$('#lvgo').onclick=verify;
+function drawCurve(R,color,dash){const big=Math.hypot(st.W,st.H)/st.V.s+Math.hypot(st.V.x-R.h,st.V.y-R.k),S=Math.asinh(2*big/Math.min(R.a,R.b))+1;ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.setLineDash(dash||[]);for(const sign of[1,-1]){ctx.beginPath();for(let i=0;i<=300;i++){const z=-S+2*S*i/300,p=HM.P2(R,sign*R.a*Math.cosh(z),R.b*Math.sinh(z));i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y))}ctx.stroke()}ctx.setLineDash([])}
+function drawLabLine(l,color,dash){const d=l.A*l.A+l.B*l.B;if(d<1e-20)return;line({x:l.A*l.C/d,y:l.B*l.C/d},{x:-l.B,y:l.A},color,2.3,dash?[7,6]:null)}
+function labPoint(o){ctx.fillStyle=o.col;ctx.beginPath();ctx.arc(X(o.p.x),Y(o.p.y),6,0,7);ctx.fill();if(st.vis.l){ctx.fillStyle=col('--fg');ctx.font='bold 13px system-ui';ctx.fillText(o.n,X(o.p.x)+8,Y(o.p.y)-8)}}
+function labDraw(){if(LAB.comparison)drawCurve(LAB.comparison,'#d63384',[7,5]);if(LAB.point){LAB.point.lines.forEach(x=>drawLabLine(x.l,x.col||'#8e44ad',x.dash));LAB.point.segs.forEach(s=>{ctx.strokeStyle=s[2];ctx.lineWidth=2;ctx.setLineDash(s[3]?[6,4]:[]);ctx.beginPath();ctx.moveTo(X(s[0].x),Y(s[0].y));ctx.lineTo(X(s[1].x),Y(s[1].y));ctx.stroke();ctx.setLineDash([])});LAB.point.points.forEach(labPoint)}if(LAB.external){if(LAB.external.polar)drawLabLine(LAB.external.polar,'#8e44ad',1);labPoint({n:'Q',p:LAB.external.q,col:'#8e44ad'});LAB.external.points.forEach((p,i)=>labPoint({n:'T'+(i+1),p,col:'#e03131'}));LAB.external.lines.forEach(l=>drawLabLine(l,'#e03131'))}if(LAB.intersection){drawLabLine(LAB.intersection.line,'#e67700',1);LAB.intersection.points.forEach((p,i)=>labPoint({n:'I'+(i+1),p,col:'#e67700'}))}if(LAB.locus.length>1){ctx.strokeStyle='#0c8599';ctx.lineWidth=2;ctx.beginPath();LAB.locus.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y)));ctx.stroke()}}
+const coreUpdate=update;update=function(){const ok=coreUpdate();if(ok){LAB.point=null;LAB.external=null;LAB.intersection=null;LAB.locus=[];syncLab()}return ok};syncLab();
 </script>
 </body>
 </html>

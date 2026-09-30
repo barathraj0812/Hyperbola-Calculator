@@ -41,6 +41,17 @@ body.pres{background:#090d13}body.pres main{grid-template-columns:1fr;max-width:
 @media print{#gw .tb,#vis,#q{display:none!important}}
 @media(max-width:980px){#res{grid-template-columns:repeat(2,minmax(0,1fr))}#res details:first-of-type{grid-column:span 2}}@media(max-width:800px){.workspace-card{order:-1}}@media(max-width:560px){header{padding:8px;gap:6px}header h1{width:100%;font-size:.92rem}header select{flex:1;min-width:0}#q{width:100%}main{padding:8px;gap:8px}.card{padding:10px}#gw{height:58vh;min-height:340px}.tb{right:8px;top:8px}.tb button{min-width:40px}.r{align-items:flex-start}.r span{text-align:left;min-width:100%}.chips button{flex:1 1 auto}.labgrid,.point-coordinate-grid{grid-template-columns:1fr}#res{grid-template-columns:1fr}#res details:first-of-type{grid-column:auto}.site-footer{padding:12px 14px 18px}}
 </style>
+<style id="pqcss">
+.pq-defs{display:grid;gap:8px;margin:2px 0 12px}.pq-def{display:flex;gap:9px;align-items:flex-start;padding:9px 10px;border-left:3px solid;border-radius:0 6px 6px 0;background:color-mix(in srgb,var(--soft) 62%,transparent);font-size:.9rem;line-height:1.35}.pq-def.p{border-color:#e03131}.pq-def.q{border-color:#8e44ad}
+.pq-sw{flex:none;width:13px;height:13px;margin-top:3px;background:#e03131;border-radius:50%}.pq-sw.q{background:#8e44ad;border-radius:2px;transform:rotate(45deg) scale(.85)}
+.pq-box{border:1px solid var(--bd);border-radius:7px;padding:8px 12px 12px;margin:0 0 12px;min-width:0}.pq-box legend{font-weight:700;padding:0 6px}.pq-box legend small{color:var(--mut);font-weight:500;margin-left:4px}.pq-box.p{border-top:3px solid #e03131}.pq-box.q{border-top:3px solid #8e44ad}
+.pq-note{color:var(--mut);font-size:.85rem;margin:6px 0}.pq-status{font-size:.9rem;margin:6px 0;padding:7px 9px;border-radius:6px;line-height:1.4;background:var(--soft)}.pq-status:empty{display:none}
+.pq-status.ok{background:color-mix(in srgb,var(--c2) 12%,var(--card));border:1px solid color-mix(in srgb,var(--c2) 40%,var(--bd))}.pq-status.err{background:color-mix(in srgb,#e03131 10%,var(--card));border:1px solid color-mix(in srgb,#e03131 45%,var(--bd))}
+.pq-box input.invalid{border-color:#e03131!important;box-shadow:0 0 0 2px color-mix(in srgb,#e03131 22%,transparent)}
+.pq-choices{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.pq-choices:empty{display:none}.pq-choices button,.pq-box .mini,.pq-selact button{min-height:34px;font-size:.85rem}.pq-choices button[aria-pressed=true],.pq-box button[aria-pressed=true]{background:var(--soft);border-color:var(--ac);font-weight:650}
+.pq-modebar{margin:0 0 10px;padding:8px 10px;border-radius:6px;background:var(--soft);border:1px solid var(--ac);font-size:.9rem}.pq-selact{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+#pq [hidden],#selact[hidden]{display:none!important}.correction-actions button:disabled{opacity:.45;cursor:not-allowed}
+</style>
 </head>
 <body>
 <header>
@@ -74,7 +85,7 @@ body.pres{background:#090d13}body.pres main{grid-template-columns:1fr;max-width:
       </div>
       <div id="graph-toast" role="status" aria-live="polite"></div>
     </div>
-    <div id="sel">Tap a point or line on the graph to see its details.</div>
+    <div id="sel">Tap a point or line on the graph to see its details.</div><div class="pq-selact" id="selact" hidden><button id="selP" type="button">Set as P</button><button id="selQ" type="button">Set as Q</button><button id="selClr" type="button">Clear selection</button></div>
   </section>
   <section class="card" id="res"></section>
 </main>
@@ -236,7 +247,7 @@ function draw0(){
   ctx.strokeStyle=col('--ac');ctx.lineWidth=3;
   for(const e of[1,-1]){ctx.beginPath();for(let i=0;i<=500;i++){const s=-S+2*S*i/500,u=e*R.a*Math.cosh(s),w=R.b*Math.sinh(s),x=R.h+u*R.t.x+w*R.n.x,y=R.k+u*R.t.y+w*R.n.y;i?ctx.lineTo(X(x),Y(y)):ctx.moveTo(X(x),Y(y))}ctx.stroke()}
   for(const o of pts()){const selected=sameGraphPoint(o,st.sel),hovered=sameGraphPoint(o,st.hover),active=selected||hovered,radius=selected?9:hovered?7.5:5.5;if(active){ctx.fillStyle=o.col;ctx.globalAlpha=selected ? .18 : .12;ctx.beginPath();ctx.arc(X(o.p.x),Y(o.p.y),radius+6,0,7);ctx.fill();ctx.globalAlpha=1}ctx.fillStyle=o.col;ctx.beginPath();ctx.arc(X(o.p.x),Y(o.p.y),radius,0,7);ctx.fill();if(selected){ctx.strokeStyle=col('--fg');ctx.lineWidth=2;ctx.stroke()}
-  ctx.fillStyle=col('--fg');ctx.font='bold 14px system-ui';if(st.vis.l&&st.V.s>14)ctx.fillText(o.n,X(o.p.x)+9,Y(o.p.y)-9)}if(window.advDraw)advDraw();if(window.labDraw)labDraw();if(st.morph)draw();
+  ctx.fillStyle=col('--fg');ctx.font='bold 14px system-ui';if(st.vis.l&&st.V.s>14)ctx.fillText(o.n,X(o.p.x)+9,Y(o.p.y)-9)}if(window.advDraw)advDraw();if(window.labDraw)labDraw();if(window.pqDraw)pqDraw();if(st.morph)draw();
 }
 function pts(){
   const R=st.renderR||st.R,v=st.vis,o=[];if(!R||R.ty!='hyp')return o;
@@ -248,13 +259,14 @@ function pts(){
 }
 function sameGraphPoint(a,b){return !!a&&!!b&&a.n===b.n&&a.k===b.k}
 function pick(mx,my){
+  if(PQ.mode){pqGraphAssign(mx,my);return}
   const R=st.R;if(!R||R.ty!='hyp')return;let best=null,bd=28;
   for(const o of pts()){const d=Math.hypot(X(o.p.x)-mx,Y(o.p.y)-my);if(d<bd){bd=d;best=o}}
-  if(best){st.sel=best;const ex=!R.rot;$('#sel').textContent=`${best.n} — ${best.k}\nExact: ${(()=>{const e=`(${num(best.p.x)}, ${num(best.p.y)})`;return e.includes('null')?'(irrational — see approx)':ex&&best.k=='Center'?e:e.includes('null')?'n/a':e})()}\nApprox: (${dec(best.p.x)}, ${dec(best.p.y)})`;draw();return}
+  if(best){st.sel=best;st.click=null;const ex=!R.rot;$('#sel').textContent=`${best.n} — ${best.k}\nExact: ${(()=>{const e=`(${num(best.p.x)}, ${num(best.p.y)})`;return e.includes('null')?'(irrational — see approx)':ex&&best.k=='Center'?e:e.includes('null')?'n/a':e})()}\nApprox: (${dec(best.p.x)}, ${dec(best.p.y)})`;draw();return}
   let bl=null;bd=14;const X0=(mx-st.W/2)/st.V.s+st.V.x,Y0=-(my-st.H/2)/st.V.s+st.V.y;
   const ls=[];if(st.vis.a)R.geometry.asymptotes.forEach((l,i)=>ls.push(['Asymptote '+(i+1),l]));if(st.vis.d)R.geometry.directrices.forEach((l,i)=>ls.push(['Directrix '+(i+1),l]));if(st.vis.ta)ls.push(['Transverse axis',R.geometry.axes.transverse]);if(st.vis.ca)ls.push(['Conjugate axis',R.geometry.axes.conjugate]);
   for(const[n,[p,u]]of ls){const L=Math.hypot(u.x,u.y),d=Math.abs((X0-p.x)*u.y-(Y0-p.y)*u.x)/L*st.V.s;if(d<bd){bd=d;bl=[n,[p,u]]}}
-  if(bl){st.sel=null;$('#sel').textContent=`${bl[0]}\n${lineEq(bl[1])}`;draw()}else{st.sel=null;$('#sel').textContent=`Point (${dec(X0)}, ${dec(Y0)})`;draw()}
+  if(bl){st.sel=null;st.click=null;$('#sel').textContent=`${bl[0]}\n${lineEq(bl[1])}`;draw()}else{pqSetClick(X0,Y0)}
 }
 function animateView(next,duration=280){if(matchMedia('(prefers-reduced-motion: reduce)').matches){st.V=next;return}const start={...st.V},at=performance.now(),tick=now=>{const p=Math.min(1,(now-at)/duration),ease=1-(1-p)**3;st.V={x:start.x+(next.x-start.x)*ease,y:start.y+(next.y-start.y)*ease,s:start.s+(next.s-start.s)*ease};draw();if(p<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)}
 function fit(animated=false){const R=st.R;if(!R||R.ty!='hyp'){st.V={x:0,y:0,s:40};return}const p=[R.geometry.center,...R.geometry.vertices,...R.geometry.coVertices,...R.geometry.foci,...R.geometry.latusRecta.flat(),...R.geometry.directrices.map(l=>l[0])],rx=Math.max(R.a,...p.map(z=>Math.abs(z.x-R.h)),1),ry=Math.max(R.b,...p.map(z=>Math.abs(z.y-R.k)),1),box=cv.getBoundingClientRect(),next={x:R.h,y:R.k,s:Math.min(box.width/(rx*3.2),box.height/(ry*3.2))};animated?animateView(next):st.V=next}
@@ -275,8 +287,8 @@ const zoom=f=>{st.V.s*=f;draw()};$('#zi').onclick=()=>zoom(1.3);$('#zo').onclick
 let toastTimer=0;
 function showGraphToast(message){const toast=$('#graph-toast');if(!toast)return;toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1600)}
 function showTransform(from,to){const changes=[];if(Math.hypot(from.h-to.h,from.k-to.k)>.01)changes.push('centre moved');if(Math.abs(from.a-to.a)>.01)changes.push('a changed');if(Math.abs(from.b-to.b)>.01)changes.push('b changed');if(Math.abs(from.t.x-to.t.x)+Math.abs(from.t.y-to.t.y)>.01)changes.push('orientation changed');const text=changes.slice(0,2).join(' · ');$('#transform').textContent=text;$('#graph-status').textContent=text||'Updated';if(text)showGraphToast(text);setTimeout(()=>{if($('#transform').textContent===text)$('#graph-status').textContent='Interactive'},1800)}
-cv.addEventListener('pointermove',e=>{if(ptr.size)return;let next=null,best=15;for(const o of pts()){const d=Math.hypot(X(o.p.x)-e.offsetX,Y(o.p.y)-e.offsetY);if(d<best){best=d;next=o}}if(next!==st.hover){st.hover=next;cv.style.cursor=next?'pointer':'grab';draw()}});
-cv.addEventListener('pointerleave',()=>{if(st.hover){st.hover=null;draw()}});
+cv.addEventListener('pointermove',e=>{if(ptr.size)return;let next=null,best=15;for(const o of pts()){const d=Math.hypot(X(o.p.x)-e.offsetX,Y(o.p.y)-e.offsetY);if(d<best){best=d;next=o}}st.hover=next;st.hxy=next?null:worldOf(e.offsetX,e.offsetY);cv.style.cursor=PQ.mode?'crosshair':(next||pqNear(e.offsetX,e.offsetY))?'pointer':'grab';draw()});
+cv.addEventListener('pointerleave',()=>{st.hover=null;st.hxy=null;draw()});
 
 // ---------- app ----------
 function update(){
@@ -329,7 +341,7 @@ $('#pres').onclick=()=>{
   setTimeout(()=>{fit();draw()},150);
 };
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('pres')){document.body.classList.remove('pres');$('#pres').textContent='⛶ Present';setTimeout(()=>{fit();draw()},150)}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.activeElement!==inp){st.sel=null;st.hover=null;$('#sel').textContent='Selection cleared. Tap a point or line on the graph to inspect it.';showGraphToast('Selection cleared');draw()}if(e.key==='0'&&document.activeElement===document.body){fit(true);showGraphToast('View fitted to hyperbola')}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.activeElement!==inp){st.sel=null;st.hover=null;st.click=null;$('#sel').textContent='Selection cleared. Tap a point or line on the graph to inspect it.';showGraphToast('Selection cleared');draw()}if(e.key==='0'&&document.activeElement===document.body){fit(true);showGraphToast('View fitted to hyperbola')}});
 new ResizeObserver(draw).observe(cv);matchMedia('(prefers-color-scheme:dark)').addEventListener('change',draw);
 renderHist();update();fit();draw();
 </script>
@@ -584,8 +596,8 @@ const LAB={restore:'',p:null,q:null,point:null,external:null,intersection:null,c
 const lab=document.createElement('section');lab.className='card';lab.id='lab';
 lab.innerHTML=`<h3 style="margin:0 0 8px">Hyperbola laboratory</h3>
 <details open><summary>Explore: parameters</summary><div class="labgrid"><div class="ins"><label>a <input id="la" type="number" min="0.000001" step="any"></label><label>b <input id="lb" type="number" min="0.000001" step="any"></label><label>h <input id="lh" type="number" step="any"></label><label>k <input id="lk" type="number" step="any"></label><label>Orientation <select id="lo"><option value="h">Horizontal</option><option value="v">Vertical</option></select></label></div><div><label>a range<input id="lar" type="range" min="0.1" max="20" step="0.1"></label><label>b range<input id="lbr" type="range" min="0.1" max="20" step="0.1"></label><div class="chips"><button id="lreset">Reset parameters</button><button id="lrestore">Restore previous</button></div></div></div><div class="hint" id="lparammsg"></div></details>
-<details><summary>Explore: point P</summary><div class="tool-intro"><b>Point P lives on the hyperbola.</b><span>Enter either coordinate and the other is calculated on the curve. P is used to study the tangent, normal, focus, and directrix relationship.</span></div><div class="point-coordinate-grid"><label><span>x coordinate of P</span><input id="lpx" type="number" step="any" inputmode="decimal"></label><label><span>y coordinate of P</span><input id="lpy" type="number" step="any" inputmode="decimal"></label></div><div class="hint" id="lpconstraint" aria-live="polite">Choose x or y to place P on the hyperbola.</div><div class="correction-actions" id="lpfixes" hidden><button id="lpfixy">Keep x, calculate y</button><button id="lpfixx">Keep y, calculate x</button></div><div class="ins"><button id="lpoint">Analyze P</button><button id="lpointclear">Clear construction</button></div><div class="hint">You can also drag P's red marker on the graph after it has been placed.</div><div class="labout" id="lpout"></div></details>
-<details><summary>Construct: tangents from Q</summary><div class="tool-intro"><b>Point Q is a free external point.</b><span>Place Q anywhere in the plane. The tool constructs every real tangent from Q to the hyperbola and marks each contact point.</span></div><div class="point-coordinate-grid"><label><span>x coordinate of Q</span><input id="lqx" type="number" step="any" inputmode="decimal"></label><label><span>y coordinate of Q</span><input id="lqy" type="number" step="any" inputmode="decimal"></label></div><div class="ins"><button id="lqgo">Construct tangents</button><button id="lqclear">Clear construction</button></div><div class="labout" id="lqout"></div></details>
+<details open><summary>Explore: results for P</summary><div class="hint">Set P in the “Points P and Q” panel. Its tangent, normal, focus and directrix results appear here and update as P moves.</div><div class="ins"><button id="lpoint">Recalculate</button></div><div class="labout" id="lpout"></div></details>
+<details open><summary>Construct: tangents from Q</summary><div class="hint">Set Q in the “Points P and Q” panel, then construct. Tangents follow Q as it moves.</div><div class="ins"><button id="lqgo">Construct tangents</button><button id="lqclear">Clear construction</button></div><div class="labout" id="lqout"></div></details>
 <details><summary>Construct: line intersections</summary><div class="ins"><label>Line <input id="lline" value="x = 0" aria-label="Line equation"></label><button id="llgo">Find intersections</button><button id="llclear">Clear intersections</button></div><div class="hint">Enter a linear equation such as <i>2x - y = 3</i>. Hyperbola intersections are solved in the shared principal-axis model.</div><div class="labout" id="llout"></div></details>
 <details><summary>Compare: second hyperbola</summary><div class="ins"><label>H₂ <input id="lcompare" value="(x-2)²/9 - (y+1)²/4 = 1" aria-label="Second hyperbola equation"></label><button id="lcgo">Compare</button><button id="lcclear">Hide H₂</button></div><div class="labout" id="lcout"></div></details>
 <details><summary>Explore: midpoint locus</summary><div class="ins"><label>Chord slope m <input id="lm" type="number" step="any" value="1"></label><label>Move midpoint <input id="lms" type="range" min="-20" max="20" step="0.1" value="0"></label><button id="ltrace">Record midpoint</button><button id="ltraceclear">Clear trace</button></div><div class="labout" id="lmout"></div></details>
@@ -595,53 +607,166 @@ fs.after(lab);
 const lrow=(k,v)=>`<div class="r"><b>${k}</b><span>${v}</span></div>`;
 const lpt=p=>`(${dec(p.x)}, ${dec(p.y)})`;
 const lline=l=>lt(l);
-const setPConstraint=text=>$('#lpconstraint').textContent=text;
-function solveForCoordinate(a,b,c,preferred){
-  if(Math.abs(a)<1e-10){if(Math.abs(b)<1e-10)return null;return-c/b}
-  const d=b*b-4*a*c;if(d<-1e-9)return null;const root=Math.sqrt(Math.max(0,d)),values=[(-b+root)/(2*a),(-b-root)/(2*a)];
-  return values.reduce((best,value)=>Math.abs(value-preferred)<Math.abs(best-preferred)?value:best);
-}
-function yForX(R,x){const q=R.q,prefer=Number($('#lpy').value);return solveForCoordinate(q.C,q.B*x+q.E,q.A*x*x+q.D*x+q.F,Number.isFinite(prefer)?prefer:R.k)}
-function xForY(R,y){const q=R.q,prefer=Number($('#lpx').value);return solveForCoordinate(q.A,q.B*y+q.D,q.C*y*y+q.E*y+q.F,Number.isFinite(prefer)?prefer:R.h)}
-function placeP(driver){
-  const R=labModel(),value=Number($(driver==='x'?'#lpx':'#lpy').value);if(!R||!Number.isFinite(value)){setPConstraint('Enter a finite '+driver+' coordinate to place P on the hyperbola.');return}
-  const other=driver==='x'?yForX(R,value):xForY(R,value);if(!Number.isFinite(other)){setPConstraint('There is no real point P on this hyperbola at that '+driver+' coordinate.');$('#lpfixes').hidden=true;return}
-  $(driver==='x'?'#lpy':'#lpx').value=+other.toFixed(8);LAB.p={x:driver==='x'?value:other,y:driver==='x'?other:value};LAB.pDriver=driver;$('#lpfixes').hidden=true;setPConstraint('P is on the hyperbola. Its '+(driver==='x'?'y':'x')+' coordinate is calculated from the '+driver+' coordinate.');setLabPoint();
-}
-function offerPCorrection(){
-  const R=labModel(),x=Number($('#lpx').value),y=Number($('#lpy').value),analysis=R&&Number.isFinite(x+y)?pointAnalysis(R,x,y):null;
-  if(analysis&&analysis.on){LAB.pDriver=null;$('#lpfixes').hidden=true;setPConstraint('P is on the hyperbola. You can use either coordinate as the starting value.');setLabPoint();return}
-  setPConstraint('These P coordinates do not lie on the hyperbola. Choose which coordinate to keep.');$('#lpfixes').hidden=false;
-}
-function handlePInput(driver){
-  if(!LAB.pDriver||LAB.pDriver===driver)placeP(driver);else offerPCorrection();
-}
+// ===== Unified P / Q system: inputs <-> graph <-> engine <-> constructions =====
+const PQ={auto:{},mode:null,pt:null,qt:null,dp:null,dq:null,snap:false,wasValid:undefined,init:false};
+const pq=document.createElement('section');pq.className='card';pq.id='pq';
+pq.innerHTML=`<h3 style="margin:0 0 8px">Points P and Q</h3>
+<div class="pq-defs"><div class="pq-def p"><i class="pq-sw p"></i><div><b>P</b> — a point <u>on</u> the hyperbola. Used by Tangent at P, Normal at P, Focal chord and Reflection.</div></div>
+<div class="pq-def q"><i class="pq-sw q"></i><div><b>Q</b> — any point in the plane, usually outside the curve. Used by Tangents from Q, Polar of Q (chord of contact) and Normals from Q.</div></div></div>
+<div class="pq-modebar" id="pqmode" hidden></div>
+<fieldset class="pq-box p"><legend>Point P <small>on the hyperbola</small></legend>
+<div class="point-coordinate-grid"><label><span>x<sub>P</sub></span><input id="lpx" type="number" step="any" inputmode="decimal" aria-label="x coordinate of P"></label><label><span>y<sub>P</sub></span><input id="lpy" type="number" step="any" inputmode="decimal" aria-label="y coordinate of P"></label></div>
+<div class="pq-note">Type either coordinate — the other one is calculated on the curve.</div>
+<div class="pq-status" id="lpconstraint" role="status" aria-live="polite"></div>
+<div class="pq-choices" id="lpalt"></div>
+<div class="correction-actions" id="lpfixes" hidden><button id="lpfixy" type="button">Change Y according to X</button><button id="lpfixx" type="button">Change X according to Y</button></div>
+<div class="ins"><button id="lppick" type="button" aria-pressed="false">Pick P on graph</button><button id="lpointclear" type="button">Clear P</button></div></fieldset>
+<fieldset class="pq-box q"><legend>Point Q <small>any point</small></legend>
+<div class="point-coordinate-grid"><label><span>x<sub>Q</sub></span><input id="lqx" type="number" step="any" inputmode="decimal" aria-label="x coordinate of Q"></label><label><span>y<sub>Q</sub></span><input id="lqy" type="number" step="any" inputmode="decimal" aria-label="y coordinate of Q"></label></div>
+<div class="pq-note">Q is free — enter both coordinates. It does not have to lie on the curve.</div>
+<div class="pq-status" id="lqstatus" role="status" aria-live="polite"></div>
+<div class="ins"><button id="lqpick" type="button" aria-pressed="false">Pick Q on graph</button><button id="lqreset" type="button">Clear Q</button></div>
+<div class="pq-note">Optional: <button id="lqsnapx" type="button" class="mini">Put Q on curve (keep x)</button> <button id="lqsnapy" type="button" class="mini">Put Q on curve (keep y)</button></div></fieldset>
+<div class="pq-note">On the graph: <b>hover</b> = preview, <b>click</b> = select a point, <b>drag</b> the P or Q marker to move it.</div>`;
+adv.before(pq);
+
+const nn=(v)=>Number.isFinite(v);
+function getv(id){const t=$(id).value.trim();if(t==='')return NaN;const a=PQ.auto[id];return a&&a.text===t?a.val:Number(t)}
+function setv(id,v,round){const p=Math.max(4,+$('#prec').value);if(round)v=+v.toFixed(p);const t=String(+v.toFixed(p));$(id).value=t;PQ.auto[id]=round?null:{text:t,val:v}}
+const cf=p=>{const m=$('#mode').value,f=v=>{if(m==='exact'){const e=num(v);if(e!==null&&e.length<=12)return e}return dec(v)};return`(${f(p.x)}, ${f(p.y)})`};
+function rootsOf(a,b,c){const s=1e-12*(Math.abs(a)+Math.abs(b)+Math.abs(c)+1);if(Math.abs(a)<s){if(Math.abs(b)<s)return[];return[-c/b]}const d=b*b-4*a*c,tol=1e-10*(b*b+Math.abs(4*a*c)+1);if(d<-tol)return[];if(d<=tol)return[-b/(2*a)];const r=Math.sqrt(d);return[(-b-r)/(2*a),(-b+r)/(2*a)]}
+const yRoots=(R,x)=>{const q=R.q;return rootsOf(q.C,q.B*x+q.E,q.A*x*x+q.D*x+q.F)};
+const xRoots=(R,y)=>{const q=R.q;return rootsOf(q.A,q.B*y+q.D,q.C*y*y+q.E*y+q.F)};
+const nearestTo=(vals,pref)=>vals.reduce((b,v)=>Math.abs(v-pref)<Math.abs(b-pref)?v:b);
+const distinct=r=>r.length===2&&Math.abs(r[0]-r[1])>1e-9*(1+Math.abs(r[0]));
+const worldOf=(mx,my)=>({x:(mx-st.W/2)/st.V.s+st.V.x,y:-(my-st.H/2)/st.V.s+st.V.y});
+function nearestOnCurve(R,x,y){const c=[];xRoots(R,y).forEach(v=>c.push({x:v,y}));yRoots(R,x).forEach(v=>c.push({x,y:v}));
+  if(c.length)return c.reduce((b,p)=>Math.hypot(p.x-x,p.y-y)<Math.hypot(b.x-x,b.y-y)?p:b);
+  const[u,v]=HM.U(R,x,y),th=Math.atan2(v/R.b,R.a/(Math.abs(u)<1e-8?(u<0?-1e-8:1e-8):u)),P=HM.par(R,th);return P?P.p:null}
+
+function pMsg(kind,text){const el=$('#lpconstraint');el.className='pq-status '+(kind||'');el.textContent=text||''}
+function qMsg(kind,text){const el=$('#lqstatus');el.className='pq-status '+(kind||'');el.textContent=text||''}
+function renderChoices(list){const box=$('#lpalt');box.innerHTML='';(list||[]).forEach(c=>{const b=document.createElement('button');b.type='button';b.textContent=c.label;if(c.pressed!==undefined)b.setAttribute('aria-pressed',!!c.pressed);b.onclick=c.fn;box.appendChild(b)})}
+function markInvalid(bad){['#lpx','#lpy'].forEach(id=>{$(id).classList.toggle('invalid',!!bad);$(id).setAttribute('aria-invalid',!!bad)})}
+function rangeInfo(R,d,val){const H=Math.abs(R.t.y)<1e-8,V=Math.abs(R.t.x)<1e-8;
+  if(H&&d==='x'&&Math.abs(val-R.h)<R.a)return{text:`No point of this hyperbola has x = ${dec(val)}: the curve has no points for ${dec(R.h-R.a)} < x < ${dec(R.h+R.a)}.`,edge:val<R.h?R.h-R.a:R.h+R.a};
+  if(V&&d==='y'&&Math.abs(val-R.k)<R.a)return{text:`No point of this hyperbola has y = ${dec(val)}: the curve has no points for ${dec(R.k-R.a)} < y < ${dec(R.k+R.a)}.`,edge:val<R.k?R.k-R.a:R.k+R.a};
+  return{text:`No real point of this hyperbola has ${d} = ${dec(val)}.`,edge:null}}
+
+function pqUpdateP(o){o=o||{};const R=labModel(),x=getv('#lpx'),y=getv('#lpy');LAB.point=null;PQ.pt=null;$('#lpfixes').hidden=true;renderChoices(o.choices);
+  if(!R){markInvalid(0);pMsg('','Enter a hyperbola equation above to place P.');$('#lpout').innerHTML='';PQ.wasValid=undefined;draw();return}
+  if(!nn(x)||!nn(y)){markInvalid(0);PQ.wasValid=undefined;$('#lpout').innerHTML='';pMsg(o.note?'err':'',o.note||'P is not placed yet. Enter x or y — the other coordinate is calculated on the curve.');draw();return}
+  const A=pointAnalysis(R,x,y);PQ.pt={x,y,valid:!!A.on};PQ.wasValid=!!A.on;
+  if(A.on){markInvalid(0);pMsg('ok',o.note||'P is on the hyperbola.');setLabPoint();if(!PQ.noAdv)pqSyncAdv(o.skipTh)}
+  else{markInvalid(1);setLabPoint();$('#lpfixes').hidden=false;const yr=yRoots(R,x),xr=xRoots(R,y);$('#lpfixy').disabled=!yr.length;$('#lpfixx').disabled=!xr.length;
+    pMsg('err',o.note||'Point is not on the hyperbola. Choose how to correct it: keep x and recalculate y, or keep y and recalculate x. Tangent and normal at P are paused until P is valid.')}
+  draw()}
+function placeP(driver,o){o=o||{};const R=labModel(),idv=driver==='x'?'#lpx':'#lpy',ido=driver==='x'?'#lpy':'#lpx',val=getv(idv);
+  if(!R){pqUpdateP();return}
+  if(!nn(val)){pqUpdateP({note:'Enter a number for '+driver+'.'});return}
+  const roots=(driver==='x'?yRoots:xRoots)(R,val),other=driver==='x'?'y':'x';
+  if(!roots.length){const ri=rangeInfo(R,driver,val),ch=[];if(ri.edge!==null)ch.push({label:`Use nearest valid ${driver} = ${dec(ri.edge)}`,fn:()=>{setv(idv,ri.edge);placeP(driver)}});
+    LAB.pDriver=driver;pqUpdateP({note:(o.prefix||'')+ri.text+(nn(getv(ido))?' P is shown where it was, marked invalid.':''),choices:ch});return}
+  const cur=getv(ido),pick=nearestTo(roots,nn(cur)?cur:(driver==='x'?R.k:R.h));setv(ido,pick);LAB.pDriver=driver;
+  const two=distinct(roots);let ch=[],note=(o.prefix||'')+`P is on the hyperbola; ${other} was calculated from ${driver}.`;
+  if(two){const rs=roots.slice().sort((a,b)=>a-b);ch=rs.map(r=>({label:`${other} = ${dec(r)}`,pressed:Math.abs(r-pick)<1e-9*(1+Math.abs(r)),fn:()=>{setv(ido,r);LAB.pDriver=driver;placeChosen(driver,other,rs,r)}}));
+    note=(o.prefix||'')+`${driver} = ${dec(val)} meets the hyperbola at two points. P uses ${other} = ${dec(pick)}${nn(cur)&&Math.abs(Math.abs(roots[0]-cur)-Math.abs(roots[1]-cur))>1e-9?' (the one nearest its previous position)':''} — choose the one you want below.`}
+  pqUpdateP({note,choices:ch})}
+function placeChosen(driver,other,rs,r){const ch=rs.map(z=>({label:`${other} = ${dec(z)}`,pressed:Math.abs(z-r)<1e-9*(1+Math.abs(z)),fn:()=>{setv(driver==='x'?'#lpy':'#lpx',z);placeChosen(driver,other,rs,z)}}));pqUpdateP({note:`P moved to ${other} = ${dec(r)}, the other point at ${driver} = ${dec(getv(driver==='x'?'#lpx':'#lpy'))}.`,choices:ch})}
+function handlePInput(driver){if(!LAB.pDriver||LAB.pDriver===driver)placeP(driver);else{const R=labModel(),x=getv('#lpx'),y=getv('#lpy');
+  if(R&&nn(x)&&nn(y)&&!pointAnalysis(R,x,y).on)pqUpdateP({note:`You changed ${driver}, so P is no longer on the hyperbola. Choose which coordinate to keep.`});else pqUpdateP({note:'P is on the hyperbola.'})}}
+function offerPCorrection(){}
+function clearP(){$('#lpx').value='';$('#lpy').value='';PQ.auto['#lpx']=PQ.auto['#lpy']=null;LAB.pDriver=null;$('#lpout').innerHTML='';pqUpdateP()}
+
+function pqUpdateQ(o){o=o||{};const R=labModel(),x=getv('#lqx'),y=getv('#lqy');PQ.qt=null;
+  if(!nn(x)||!nn(y)){LAB.external=null;$('#lqout').innerHTML='';qMsg('','Q is not placed yet. Enter both coordinates.');draw();return}
+  PQ.qt={x,y};LAB.q={x,y};
+  if(R){const A=pointAnalysis(R,x,y),c=HM.contacts(R,A.u,A.v)||[],n=A.on?1:c.length;
+    qMsg('ok',A.on?'Q lies on the hyperbola: exactly one tangent passes through it.':n===2?'Q is outside the curve (between the branches): two real tangents exist.':n===1?'Q gives one limiting tangent.':'Q is inside a branch: no real tangent passes through it. Move Q out to see tangents.');
+    if(LAB.external||o.rebuild)externalTangents();else $('#lqout').innerHTML=lrow('Q',lpt({x,y}))+lrow('Ready','Press “Construct tangents” to draw them.')}
+  if(!o.skipAdv)pqSyncAdv(true);draw()}
+function pqSyncAdv(skipTh){const R=labModel();if(!R)return;
+  if(!skipTh&&PQ.pt&&PQ.pt.valid){const[u,v]=HM.U(R,PQ.pt.x,PQ.pt.y);if(Math.abs(u)>1e-9)$('#th').value=+HM.thOf(R,u,v).toFixed(10)}
+  if(PQ.qt){$('#x0').value=+PQ.qt.x.toFixed(8);$('#y0').value=+PQ.qt.y.toFixed(8)}
+  advRender()}
+function snapQ(keep){const R=labModel(),x=getv('#lqx'),y=getv('#lqy');if(!R||!nn(x)||!nn(y)){qMsg('err','Enter both Q coordinates first.');return}
+  const roots=(keep==='x'?yRoots:xRoots)(R,keep==='x'?x:y);
+  if(!roots.length){qMsg('err',rangeInfo(R,keep,keep==='x'?x:y).text+' Q was not moved.');return}
+  const pick=nearestTo(roots,keep==='x'?y:x);setv(keep==='x'?'#lqy':'#lqx',pick);pqUpdateQ();
+  const other=roots.filter(r=>r!==pick);if(other.length&&distinct(roots))qMsg('ok',`Q moved onto the hyperbola (${keep==='x'?'y':'x'} = ${dec(pick)}). The other point with the same ${keep} has ${keep==='x'?'y':'x'} = ${dec(other[0])}.`)}
+function pqAfterEquation(hadExt){const R=labModel();if(!R)return;PQ.dp=PQ.dq=null;
+  if(nn(getv('#lpx'))&&nn(getv('#lpy'))){if(PQ.wasValid&&LAB.pDriver!==undefined)placeP(LAB.pDriver||'x',{prefix:'The equation changed, so P was re-checked. '});else pqUpdateP({note:PQ.wasValid===false?'The equation changed and P is not on the new hyperbola. Choose how to correct it.':undefined})}
+  else pqUpdateP();
+  pqUpdateQ({rebuild:hadExt});if(st.click)pqSetClick(st.click.x,st.click.y)}
+function pqInit(R){if(PQ.init)return;PQ.init=true;const p=R.geometry.vertices[0];setv('#lpx',p.x);setv('#lpy',p.y);LAB.p={x:p.x,y:p.y};LAB.pDriver=null;setv('#lqx',R.h+R.c+R.a,1);setv('#lqy',R.k,1);LAB.q={x:getv('#lqx'),y:getv('#lqy')}}
+
+// ---- graph selection (hover = preview, click = persistent) ----
+function pqSelTarget(){return st.click||(st.sel&&st.sel.p)||null}
+function pqSelUI(){$('#selact').hidden=!pqSelTarget()}
+function pqSetClick(x,y){st.click={x,y};st.sel=null;const R=labModel(),A=R?pointAnalysis(R,x,y):null;let t=`Selected point ${cf({x,y})}\nStays marked until you click elsewhere or press Esc.`;
+  if(A){if(A.on)t+='\nOn the hyperbola.';else{const c=nearestOnCurve(R,x,y);t+='\n'+A.relation+'.';if(c&&Math.hypot(c.x-x,c.y-y)*st.V.s<6)t+='\nVery close to the curve — nearest curve point '+cf(c)+'.'}}
+  $('#sel').textContent=t;pqSelUI();draw()}
+function pqSetMode(m){PQ.mode=PQ.mode===m?null:m;$('#lppick').setAttribute('aria-pressed',PQ.mode==='P');$('#lqpick').setAttribute('aria-pressed',PQ.mode==='Q');const b=$('#pqmode');b.hidden=!PQ.mode;b.textContent=PQ.mode?`Click the graph to place ${PQ.mode}${PQ.mode==='P'?' (it snaps to the hyperbola)':''}. Press Esc to cancel.`:'';cv.style.cursor=PQ.mode?'crosshair':'grab';draw()}
+function pqGraphAssign(mx,my){const R=labModel(),w=worldOf(mx,my),m=PQ.mode;pqSetMode(m);if(!R)return;
+  if(m==='P'){const c=nearestOnCurve(R,w.x,w.y);if(!c)return;setv('#lpx',c.x);setv('#lpy',c.y);LAB.pDriver=null;pqUpdateP({note:'P was placed on the point of the hyperbola nearest your click.'});showGraphToast('P placed on the hyperbola')}
+  else{setv('#lqx',w.x,1);setv('#lqy',w.y,1);pqUpdateQ();showGraphToast('Q placed')}}
+function pqNear(mx,my){const P=PQ.dp||PQ.pt,Q=PQ.dq||PQ.qt;if(P&&Math.hypot(X(P.x)-mx,Y(P.y)-my)<16)return'P';if(Q&&Math.hypot(X(Q.x)-mx,Y(Q.y)-my)<16)return'Q';return null}
+
+// ---- drawing ----
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function pill(text,x,y,color,o){o=o||{};ctx.save();ctx.font=(o.bold?'bold ':'')+'12.5px system-ui';const w=ctx.measureText(text).width+14,h=22;x=Math.min(Math.max(4,x),Math.max(4,st.W-w-4));y=Math.min(Math.max(4,y),Math.max(4,st.H-h-4));ctx.globalAlpha=o.alpha||.95;ctx.fillStyle=col('--card');ctx.strokeStyle=color;ctx.lineWidth=o.dash?1:1.6;ctx.setLineDash(o.dash?[4,3]:[]);rr(x,y,w,h,6);ctx.fill();ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=o.text||col('--fg');ctx.textBaseline='middle';ctx.fillText(text,x+7,y+h/2+.5);ctx.restore()}
+function pqDraw(){const R=labModel();if(!R)return;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let moving=false;
+  const ease=(k,t)=>{if(!t){PQ[k]=null;return null}let d=PQ[k];if(!d||PQ.snap||reduce)d=PQ[k]={x:t.x,y:t.y};else{const dx=t.x-d.x,dy=t.y-d.y;if(Math.hypot(dx,dy)*st.V.s<.4){d.x=t.x;d.y=t.y}else{d.x+=dx*.35;d.y+=dy*.35;moving=true}}return d};
+  const dp=ease('dp',PQ.pt),dq=ease('dq',PQ.qt);pqSelUI();
+  if(st.click){const x=X(st.click.x),y=Y(st.click.y);ctx.save();ctx.fillStyle=col('--fg');ctx.globalAlpha=.12;ctx.beginPath();ctx.arc(x,y,15,0,7);ctx.fill();ctx.globalAlpha=1;ctx.strokeStyle=col('--fg');ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,7,0,7);ctx.stroke();ctx.beginPath();ctx.arc(x,y,2,0,7);ctx.fillStyle=col('--fg');ctx.fill();ctx.restore();pill(cf(st.click),x+12,y+10,col('--fg'),{bold:1})}
+  else if(st.hxy&&!st.hover&&!PQ.dragging&&!pqNear(X(st.hxy.x),Y(st.hxy.y))){const x=X(st.hxy.x),y=Y(st.hxy.y);ctx.save();ctx.strokeStyle=col('--mut');ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(x,y,4,0,7);ctx.stroke();ctx.restore();pill(cf(st.hxy),x+10,y+8,col('--mut'),{dash:1,alpha:.85,text:col('--mut')})}
+  if(dq){const x=X(dq.x),y=Y(dq.y),c='#8e44ad';ctx.save();ctx.fillStyle=c;ctx.strokeStyle=col('--card');ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-8);ctx.lineTo(x+8,y);ctx.lineTo(x,y+8);ctx.lineTo(x-8,y);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();pill('Q = '+cf(PQ.qt),x+11,y+8,c,{bold:1})}
+  if(dp){const x=X(dp.x),y=Y(dp.y),c='#e03131',ok=PQ.pt.valid;ctx.save();if(ok){ctx.fillStyle=c;ctx.globalAlpha=.16;ctx.beginPath();ctx.arc(x,y,13,0,7);ctx.fill();ctx.globalAlpha=1;ctx.fillStyle=c;ctx.strokeStyle=col('--card');ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,7,0,7);ctx.fill();ctx.stroke()}
+    else{ctx.fillStyle=col('--card');ctx.strokeStyle=c;ctx.lineWidth=2.2;ctx.setLineDash([3,3]);ctx.beginPath();ctx.arc(x,y,8,0,7);ctx.fill();ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(x-3.5,y-3.5);ctx.lineTo(x+3.5,y+3.5);ctx.moveTo(x+3.5,y-3.5);ctx.lineTo(x-3.5,y+3.5);ctx.stroke()}
+    ctx.restore();pill('P = '+cf(PQ.pt)+(ok?'':'  ✕ not on curve'),x+11,y-32,c,{bold:1})}
+  if(PQ.mode)pill(`Click to place ${PQ.mode}  ·  Esc cancels`,st.W/2-90,10,PQ.mode==='P'?'#e03131':'#8e44ad',{bold:1});
+  if(moving)draw()}
+
+// ---- events ----
+$('#lppick').onclick=()=>pqSetMode('P');$('#lqpick').onclick=()=>pqSetMode('Q');
+['#lqx','#lqy'].forEach(id=>$(id).addEventListener('input',()=>{PQ.auto[id]=null;pqUpdateQ()}));
+$('#lqreset').onclick=()=>{$('#lqx').value=$('#lqy').value='';PQ.auto['#lqx']=PQ.auto['#lqy']=null;LAB.external=null;pqUpdateQ()};
+$('#lqsnapx').onclick=()=>snapQ('x');$('#lqsnapy').onclick=()=>snapQ('y');
+$('#selP').onclick=()=>{const R=labModel(),t=pqSelTarget();if(!R||!t)return;const on=pointAnalysis(R,t.x,t.y).on,c=on?t:nearestOnCurve(R,t.x,t.y);if(!c)return;setv('#lpx',c.x);setv('#lpy',c.y);LAB.pDriver=null;pqUpdateP({note:on?'P was set from your selected point.':'The selected point is not on the hyperbola, so P was placed on the nearest point of the curve.'})};
+$('#selQ').onclick=()=>{const t=pqSelTarget();if(!t)return;setv('#lqx',t.x,1);setv('#lqy',t.y,1);pqUpdateQ()};
+$('#selClr').onclick=()=>{st.click=null;st.sel=null;$('#sel').textContent='Selection cleared. Tap a point or line on the graph to inspect it.';pqSelUI();draw()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&PQ.mode)pqSetMode(PQ.mode)});
+$('#th').addEventListener('input',()=>{const R=labModel(),t=+$('#th').value,P=R&&nn(t)?HM.par(R,t):null;if(!P)return;setv('#lpx',P.p.x);setv('#lpy',P.p.y);LAB.pDriver=null;pqUpdateP({note:'P follows the parameter θ set in the advanced tools.',skipTh:true})});
+['#x0','#y0'].forEach(id=>$(id).addEventListener('input',()=>{const x=$('#x0').value,y=$('#y0').value;if(x===''||y==='')return;$('#lqx').value=x;$('#lqy').value=y;PQ.auto['#lqx']=PQ.auto['#lqy']=null;pqUpdateQ({skipAdv:true})}));
+$('#setq').addEventListener('click',()=>$('#th').dispatchEvent(new Event('input')));
+let pqDrag=null;
+cv.addEventListener('pointerdown',e=>{if(PQ.mode)return;const w=pqNear(e.offsetX,e.offsetY);if(!w)return;pqDrag=w;PQ.snap=true;PQ.dragging=true;cv.setPointerCapture(e.pointerId);e.stopImmediatePropagation()},true);
+cv.addEventListener('pointermove',e=>{if(!pqDrag)return;const R=labModel();if(!R)return;const w=worldOf(e.offsetX,e.offsetY);
+  if(pqDrag==='P'){const c=nearestOnCurve(R,w.x,w.y);if(c){setv('#lpx',c.x);setv('#lpy',c.y);LAB.pDriver=null;pqUpdateP({note:'P is on the hyperbola (dragged along the curve).'})}}
+  else{setv('#lqx',w.x,1);setv('#lqy',w.y,1);pqUpdateQ()}e.stopImmediatePropagation()},true);
+['pointerup','pointercancel'].forEach(t=>cv.addEventListener(t,e=>{if(pqDrag){pqDrag=null;PQ.snap=false;PQ.dragging=false;e.stopImmediatePropagation()}},true));
+
+
 function labEquation(a,b,h,k,o){const term=(v,n)=>Math.abs(v)<1e-12?n:`(${n}${v<0?' + ':' − '}${dec(Math.abs(v))})`;return o==='h'?`${term(h,'x')}²/${dec(a*a)} − ${term(k,'y')}²/${dec(b*b)} = 1`:`${term(k,'y')}²/${dec(a*a)} − ${term(h,'x')}²/${dec(b*b)} = 1`}
 function labModel(){return st.R&&st.R.ty==='hyp'?st.R:null}
 function syncLab(){const R=labModel();if(!R)return;const axis=!R.rot;if(axis){[['la',R.a],['lb',R.b],['lh',R.h],['lk',R.k],['lar',Math.min(20,R.a)],['lbr',Math.min(20,R.b)]].forEach(([id,v])=>{const el=$('#'+id);if(document.activeElement!==el)el.value=+v.toFixed(8)});$('#lo').value=Math.abs(R.t.y)<1e-8?'h':'v';$('#lparammsg').textContent='Equation, graph, properties, and active constructions share this parameter model.'}else $('#lparammsg').textContent='This equation has rotated axes. Parameter editing is available through the equation input; all constructions remain active.';
-  if(!LAB.p){const p=R.geometry.vertices[0];LAB.p={x:p.x,y:p.y};$('#lpx').value=+p.x.toFixed(6);$('#lpy').value=+p.y.toFixed(6);LAB.pDriver=null;setPConstraint('P starts at a vertex. Enter x or y to move it along the hyperbola.')}if(!LAB.q){LAB.q={x:R.h+R.c+R.a,y:R.k};$('#lqx').value=+LAB.q.x.toFixed(6);$('#lqy').value=+LAB.q.y.toFixed(6)}
+  pqInit(R)
 }
 function applyLabParameters(){const R=labModel(),a=+$('#la').value,b=+$('#lb').value,h=+$('#lh').value,k=+$('#lk').value,o=$('#lo').value;if(!R||R.rot){$('#lparammsg').textContent='Use the equation input for rotated hyperbolas.';return}if(!(a>0&&b>0&&[h,k].every(isFinite))){$('#lparammsg').textContent='a and b must be positive; h and k must be finite.';return}if(!LAB.restore)LAB.restore=inp.value;set(labEquation(a,b,h,k,o));syncLab()}
 ['la','lb','lh','lk','lo'].forEach(id=>$('#'+id).addEventListener('change',applyLabParameters));
 [['lar','la'],['lbr','lb']].forEach(([range,num])=>$('#'+range).oninput=()=>{$('#'+num).value=$('#'+range).value;applyLabParameters()});
 $('#lreset').onclick=()=>{const R=labModel();if(!R||R.rot)return;if(!LAB.restore)LAB.restore=inp.value;set(labEquation(4,3,0,0,'h'));syncLab()};
 $('#lrestore').onclick=()=>{if(LAB.restore){const e=LAB.restore;LAB.restore='';set(e);syncLab()}};
-function setLabPoint(){const R=labModel(),x=+$('#lpx').value,y=+$('#lpy').value,A=pointAnalysis(R,x,y);LAB.point=null;if(!A){$('#lpout').innerHTML='<div class="err">Enter finite coordinates after a valid hyperbola is available.</div>';draw();return}const G={points:[{n:'P',p:{x,y},col:'#e03131'}],lines:[],segs:[]};let html=lrow('P',lpt({x,y}))+lrow('Relationship',A.on?'On the hyperbola':'Not on the hyperbola')+lrow('Equation value',dec(A.value))+lrow('Residual from 1',dec(A.comparison)+' (tolerance ±'+A.tol.toExponential(1)+')')+lrow('Centre distance',dec(A.centreDistance))+lrow('PF₁ / PF₂',dec(A.distances[0])+' / '+dec(A.distances[1]))+lrow('|PF₁ − PF₂|',dec(A.focalDifference));
+function setLabPoint(){const R=labModel(),x=getv('#lpx'),y=getv('#lpy'),A=pointAnalysis(R,x,y);LAB.point=null;if(!A){$('#lpout').innerHTML='<div class="err">Enter finite coordinates after a valid hyperbola is available.</div>';draw();return}const G={points:[],lines:[],segs:[]};let html=lrow('P',lpt({x,y}))+lrow('Relationship',A.on?'On the hyperbola':'Not on the hyperbola')+lrow('Equation value',dec(A.value))+lrow('Residual from 1',dec(A.comparison)+' (tolerance ±'+A.tol.toExponential(1)+')')+lrow('Centre distance',dec(A.centreDistance))+lrow('PF₁ / PF₂',dec(A.distances[0])+' / '+dec(A.distances[1]))+lrow('|PF₁ − PF₂|',dec(A.focalDifference));
   if(A.on){LAB.p={x,y};const[u,v]=HM.U(R,x,y),theta=HM.thOf(R,u,v),fd=HM.focusDirectrix(R,theta),tan=HM.tan(R,u,v),nor=HM.nor(R,u,v),slope=l=>Math.abs(l.B)<1e-10?'vertical':dec(-l.A/l.B);G.lines.push({l:tan,col:'#e03131'},{l:nor,col:'#8e44ad'},...R.geometry.directrices.map(d=>({l:{A:d[1].y,B:-d[1].x,C:d[1].y*d[0].x-d[1].x*d[0].y},col:'#0c8599',dash:1})));G.points.push({n:'F',p:fd.focus,col:'#0c8599'},{n:'D',p:fd.foot,col:'#8e44ad'});G.segs.push([fd.point,fd.focus,'#0c8599'],[fd.point,fd.foot,'#0c8599',1]);html+=lrow('Tangent',lline(tan))+lrow('Tangent slope',slope(tan))+lrow('Normal',lline(nor))+lrow('Normal slope',slope(nor))+lrow('PD / PF',dec(fd.pd)+' / '+dec(fd.pf))+lrow('PF / PD',dec(fd.ratio)+' = e = '+dec(R.e));}
-  else{html+=lrow('Tangent / normal','Not calculated: P is not on the hyperbola within tolerance.');offerPCorrection()}LAB.point=G;$('#lpout').innerHTML=html;draw();
+  else{html+=lrow('Tangent / normal','Not calculated: P is not on the hyperbola within tolerance.');}LAB.point=G;$('#lpout').innerHTML=html;draw();
 }
-$('#lpoint').onclick=setLabPoint;$('#lpointclear').onclick=()=>{LAB.point=null;LAB.pDriver=null;$('#lpout').innerHTML='';setPConstraint('Choose x or y to place P on the hyperbola.');draw()};
+$('#lpoint').onclick=setLabPoint;$('#lpointclear').onclick=clearP;
 $('#lpx').addEventListener('input',()=>handlePInput('x'));$('#lpy').addEventListener('input',()=>handlePInput('y'));$('#lpfixy').onclick=()=>placeP('x');$('#lpfixx').onclick=()=>placeP('y');
-function placeQ(){const x=Number($('#lqx').value),y=Number($('#lqy').value);if(!Number.isFinite(x)||!Number.isFinite(y))return;LAB.q={x,y};LAB.external=null;$('#lqout').innerHTML=lrow('Q',lpt(LAB.q))+lrow('Ready','Q is plotted. Construct tangents when ready.');draw()}
-$('#lqx').addEventListener('input',placeQ);$('#lqy').addEventListener('input',placeQ);
-let labDragging=false;
-cv.addEventListener('pointerdown',e=>{if(!LAB.point||!LAB.point.points.length)return;const p=LAB.point.points[0].p;if(Math.hypot(X(p.x)-e.offsetX,Y(p.y)-e.offsetY)>16)return;labDragging=true;cv.setPointerCapture(e.pointerId);e.stopImmediatePropagation()},true);
-cv.addEventListener('pointermove',e=>{if(!labDragging)return;const R=labModel(),x=(e.offsetX-st.W/2)/st.V.s+st.V.x,y=-(e.offsetY-st.H/2)/st.V.s+st.V.y,[u,v]=HM.U(R,x,y);let theta=Math.atan2(v/R.b,R.a/(Math.abs(u)<1e-8?(u<0?-1e-8:1e-8):u));if(Math.abs(Math.cos(theta))>0.02){const p=HM.par(R,theta).p;$('#lpx').value=+p.x.toFixed(8);$('#lpy').value=+p.y.toFixed(8);setLabPoint()}e.stopImmediatePropagation()},true);
-['pointerup','pointercancel'].forEach(type=>cv.addEventListener(type,e=>{if(labDragging){labDragging=false;e.stopImmediatePropagation()}},true));
 function lineFromText(text){const q=parse(text);if(Math.abs(q.A)+Math.abs(q.B)+Math.abs(q.C)>1e-9||Math.abs(q.D)+Math.abs(q.E)<1e-12)throw'Enter one non-degenerate linear equation, for example 2x − y = 3.';return{A:q.D,B:q.E,C:-q.F}}
 function intersectLine(){const R=labModel();try{const l=lineFromText($('#lline').value),d=l.A*l.A+l.B*l.B,p={x:l.A*l.C/d,y:l.B*l.C/d},dir={x:-l.B,y:l.A},q=HM.U(R,p.x,p.y),uvd=[dir.x*R.t.x+dir.y*R.t.y,dir.x*R.n.x+dir.y*R.n.y],hit=HM.isect(R,q,uvd).map(z=>HM.P2(R,z[0],z[1]));LAB.intersection={line:l,points:hit};$('#llout').innerHTML=lrow('Line',lline(l))+lrow('Real intersections',hit.length?hit.map(lpt).join('<br>'):'None');draw()}catch(e){$('#llout').innerHTML='<div class="err">'+(typeof e==='string'?e:'The line could not be interpreted reliably.')+'</div>'}}
 $('#llgo').onclick=intersectLine;$('#llclear').onclick=()=>{LAB.intersection=null;$('#llout').innerHTML='';draw()};
-function externalTangents(){const R=labModel(),x=+$('#lqx').value,y=+$('#lqy').value;if(!R||![x,y].every(isFinite))return;const[u,v]=HM.U(R,x,y),contacts=HM.contacts(R,u,v)||[],lines=contacts.map(z=>HM.tan(R,z[0],z[1])),points=contacts.map(z=>HM.P2(R,z[0],z[1]));LAB.external={q:{x,y},lines,points,polar:Math.hypot(u,v)<1e-9?null:HM.L(R,u/R.a2,-v/R.b2,1)};let h=lrow('Q',lpt({x,y}))+lrow('State',contacts.length===2?'Two real tangents':contacts.length===1?'One limiting tangent':'No real tangents');if(contacts.length){h+=lrow('Contact points',points.map(lpt).join('<br>'))+lrow('Tangents',lines.map(lline).join('<br>'))+lrow('Chord of contact / polar',lline(LAB.external.polar));}$('#lqout').innerHTML=h;draw()}
+function externalTangents(){const R=labModel(),x=getv('#lqx'),y=getv('#lqy');if(!R||![x,y].every(isFinite))return;const[u,v]=HM.U(R,x,y),contacts=HM.contacts(R,u,v)||[],lines=contacts.map(z=>HM.tan(R,z[0],z[1])),points=contacts.map(z=>HM.P2(R,z[0],z[1]));LAB.external={q:{x,y},lines,points,polar:Math.hypot(u,v)<1e-9?null:HM.L(R,u/R.a2,-v/R.b2,1)};let h=lrow('Q',lpt({x,y}))+lrow('State',contacts.length===2?'Two real tangents':contacts.length===1?'One limiting tangent':'No real tangents');if(contacts.length){h+=lrow('Contact points',points.map(lpt).join('<br>'))+lrow('Tangents',lines.map(lline).join('<br>'))+lrow('Chord of contact / polar',lline(LAB.external.polar));}$('#lqout').innerHTML=h;draw()}
 $('#lqgo').onclick=externalTangents;$('#lqclear').onclick=()=>{LAB.external=null;$('#lqout').innerHTML='';draw()};
 function compare(){try{const R=analyze(parse($('#lcompare').value));if(R.ty!=='hyp')throw R.msg;LAB.comparison=R;$('#lcout').innerHTML=lrow('H₂ orientation',R.ori)+lrow('Centre',lpt(R.geometry.center))+lrow('a / b / c',dec(R.a)+' / '+dec(R.b)+' / '+dec(R.c))+lrow('Eccentricity',dec(R.e))+lrow('Relative centres',dec(Math.hypot(R.h-st.R.h,R.k-st.R.k)))+lrow('Rendering','H₁ blue; H₂ magenta. Use the line-intersection tool for exact line intersections.');draw()}catch(e){$('#lcout').innerHTML='<div class="err">'+(typeof e==='string'?e:'H₂ could not be analyzed.')+'</div>'}}
 $('#lcgo').onclick=compare;$('#lcclear').onclick=()=>{LAB.comparison=null;$('#lcout').innerHTML='';draw()};
@@ -652,8 +777,8 @@ $('#lvgo').onclick=verify;
 function drawCurve(R,color,dash){const big=Math.hypot(st.W,st.H)/st.V.s+Math.hypot(st.V.x-R.h,st.V.y-R.k),S=Math.asinh(2*big/Math.min(R.a,R.b))+1;ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.setLineDash(dash||[]);for(const sign of[1,-1]){ctx.beginPath();for(let i=0;i<=300;i++){const z=-S+2*S*i/300,p=HM.P2(R,sign*R.a*Math.cosh(z),R.b*Math.sinh(z));i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y))}ctx.stroke()}ctx.setLineDash([])}
 function drawLabLine(l,color,dash){const d=l.A*l.A+l.B*l.B;if(d<1e-20)return;line({x:l.A*l.C/d,y:l.B*l.C/d},{x:-l.B,y:l.A},color,2.3,dash?[7,6]:null)}
 function labPoint(o){ctx.fillStyle=o.col;ctx.beginPath();ctx.arc(X(o.p.x),Y(o.p.y),6,0,7);ctx.fill();if(st.vis.l){ctx.fillStyle=col('--fg');ctx.font='bold 13px system-ui';ctx.fillText(o.n,X(o.p.x)+8,Y(o.p.y)-8)}}
-function labDraw(){if(LAB.comparison)drawCurve(LAB.comparison,'#d63384',[7,5]);if(LAB.point){LAB.point.lines.forEach(x=>drawLabLine(x.l,x.col||'#8e44ad',x.dash));LAB.point.segs.forEach(s=>{ctx.strokeStyle=s[2];ctx.lineWidth=2;ctx.setLineDash(s[3]?[6,4]:[]);ctx.beginPath();ctx.moveTo(X(s[0].x),Y(s[0].y));ctx.lineTo(X(s[1].x),Y(s[1].y));ctx.stroke();ctx.setLineDash([])});LAB.point.points.forEach(labPoint)}if(LAB.external){if(LAB.external.polar)drawLabLine(LAB.external.polar,'#8e44ad',1);labPoint({n:'Q',p:LAB.external.q,col:'#8e44ad'});LAB.external.points.forEach((p,i)=>labPoint({n:'T'+(i+1),p,col:'#e03131'}));LAB.external.lines.forEach(l=>drawLabLine(l,'#e03131'))}if(LAB.intersection){drawLabLine(LAB.intersection.line,'#e67700',1);LAB.intersection.points.forEach((p,i)=>labPoint({n:'I'+(i+1),p,col:'#e67700'}))}if(LAB.locus.length>1){ctx.strokeStyle='#0c8599';ctx.lineWidth=2;ctx.beginPath();LAB.locus.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y)));ctx.stroke()}}
-const coreUpdate=update;update=function(){const ok=coreUpdate();if(ok){LAB.point=null;LAB.external=null;LAB.intersection=null;LAB.locus=[];syncLab()}return ok};syncLab();
+function labDraw(){if(LAB.comparison)drawCurve(LAB.comparison,'#d63384',[7,5]);if(LAB.point){LAB.point.lines.forEach(x=>drawLabLine(x.l,x.col||'#8e44ad',x.dash));LAB.point.segs.forEach(s=>{ctx.strokeStyle=s[2];ctx.lineWidth=2;ctx.setLineDash(s[3]?[6,4]:[]);ctx.beginPath();ctx.moveTo(X(s[0].x),Y(s[0].y));ctx.lineTo(X(s[1].x),Y(s[1].y));ctx.stroke();ctx.setLineDash([])});LAB.point.points.forEach(labPoint)}if(LAB.external){if(LAB.external.polar)drawLabLine(LAB.external.polar,'#8e44ad',1);LAB.external.points.forEach((p,i)=>labPoint({n:'T'+(i+1),p,col:'#e03131'}));LAB.external.lines.forEach(l=>drawLabLine(l,'#e03131'))}if(LAB.intersection){drawLabLine(LAB.intersection.line,'#e67700',1);LAB.intersection.points.forEach((p,i)=>labPoint({n:'I'+(i+1),p,col:'#e67700'}))}if(LAB.locus.length>1){ctx.strokeStyle='#0c8599';ctx.lineWidth=2;ctx.beginPath();LAB.locus.forEach((p,i)=>i?ctx.lineTo(X(p.x),Y(p.y)):ctx.moveTo(X(p.x),Y(p.y)));ctx.stroke()}}
+const coreUpdate=update;update=function(){const hadExt=!!LAB.external,ok=coreUpdate();if(ok){LAB.point=null;LAB.external=null;LAB.intersection=null;LAB.locus=[];syncLab();pqAfterEquation(hadExt)}return ok};syncLab();pqAfterEquation(false);
 </script>
 </body>
 </html>
